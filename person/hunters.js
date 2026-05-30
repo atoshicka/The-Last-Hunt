@@ -33,8 +33,8 @@ export class Commissioner {
     }
 
     draw(ctx) {
-        const sprite = this.state === 'attack' ? this.attackSprite : this.idleSprite;
-        sprite.draw(ctx, this.x, this.y, this.scale);
+    const sprite = this.state === 'attack' ? this.attackSprite : this.idleSprite;
+    sprite.draw(ctx, this.x - 46, this.y - 50, this.scale);
     }
 }
 
@@ -58,6 +58,6 @@ export class Sam {
     }
 
     draw(ctx) {
-        this.sprite.draw(ctx, this.x, this.y, this.scale);
+    this.sprite.draw(ctx, this.x - 46, this.y - 50, this.scale);
     }
 }

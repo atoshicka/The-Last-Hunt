@@ -1,21 +1,106 @@
 import { Commissioner, Sam } from './hunters.js';
 import { Ghost } from './enemies.js';
+import { Sprite } from './sprite.js';
 
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
+const hunters = [];
+
 canvas.width = 1100;
 canvas.height = 600;
 
-const commissioner = new Commissioner(300, 180);
-const sam = new Sam(200, 180);
-const ghost = new Ghost(600, 180);
-
 const COLS = 10;
 const ROWS = 5;
-const CELL_SIZE = 80;
+const CELL_SIZE = 96;
 const GRID_X = 150;
 const GRID_Y = 80;  
+
+const cards = [
+    { type: 'commissioner', label: 'commissioner', x: 20, y: 60, width: 110, height: 90 },
+    { type: 'sam', label: 'sam', x: 20, y: 170, width: 110, height: 90 },
+];
+
+const commissionerCardSprite = new Sprite({
+    src: './assets/hunters/commissioner-idle.png',
+    frameWidth: 96,
+    frameHeight: 96,
+    frames: 1,
+    speed: 1,
+});
+
+const samCardSprite = new Sprite({
+    src: './assets/hunters/sam-idle.png',
+    frameWidth: 96,
+    frameHeight: 96,
+    frames: 1,
+    speed: 1,
+});
+
+let dragging = null;
+let dragSprite = null;
+let dragX = 0;
+let dragY = 0;
+
+canvas.addEventListener('mousedown', (e) => {
+  const rect = canvas.getBoundingClientRect();
+  const mx = e.clientX - rect.left;
+  const my = e.clientY - rect.top;
+
+  cards.forEach(card => {
+    if (mx >= card.x && mx <= card.x + card.width &&
+        my >= card.y && my <= card.y + card.height) {
+      dragging = card.type;
+      if (card.type === 'commissioner') dragSprite = new Commissioner(mx, my);
+      if (card.type === 'sam') dragSprite = new Sam(mx, my);
+    }
+  });
+});
+
+canvas.addEventListener('mousemove', (e) => {
+  const rect = canvas.getBoundingClientRect();
+  dragX = e.clientX - rect.left;
+  dragY = e.clientY - rect.top;
+  if (dragSprite) {
+    dragSprite.x = dragX;
+    dragSprite.y = dragY;
+  }
+});
+
+canvas.addEventListener('mouseup', (e) => {
+  if (!dragging) return;
+
+  const rect = canvas.getBoundingClientRect();
+  const mx = e.clientX - rect.left;
+  const my = e.clientY - rect.top;
+
+  const col = Math.floor((mx - GRID_X) / CELL_SIZE);
+  const row = Math.floor((my - GRID_Y) / CELL_SIZE);
+
+  if (col >= 0 && col < COLS && row >= 0 && row < ROWS) {
+    const pos = getCellCenter(col, row);
+
+    if (dragging === 'commissioner') {
+      hunters.push(new Commissioner(pos.x, pos.y));
+    } else if (dragging === 'sam') {
+      hunters.push(new Sam(pos.x, pos.y));
+    }
+  }
+
+  dragging = null;
+  dragSprite = null;
+});
+
+
+function getCellCenter(col, row) {
+    return {
+        x: GRID_X + col * CELL_SIZE + CELL_SIZE / 2,
+        y: GRID_Y + row * CELL_SIZE + CELL_SIZE / 2,
+    };
+}
+
+const pos3 = getCellCenter(7, 0);
+const ghost = new Ghost(pos3.x, pos3.y);
 
 function drawGrid() {
     for (let row = 0; row < ROWS; row++) {
@@ -33,9 +118,35 @@ function drawGrid() {
     }
 }
 
+function drawCard() {
+    cards.forEach(card => {
+        ctx.fillStyle = '#1a1a2e';
+        ctx.fillRect(card.x, card.y, card.width, card.height);
+        ctx.strokeStyle = '#534ab7';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(card.x, card.y, card.width, card.height);
+
+        const spriteSize = 96;
+        const scale = 0.6;
+        const drawSize = spriteSize * scale;
+        const spriteX = card.x + card.width / 2 - drawSize / 2;
+        const spriteY = card.y + 10;
+
+        if (card.type === 'commissioner') {
+            commissionerCardSprite.draw(ctx, spriteX, spriteY, scale);
+        } else if (card.type === 'sam') {
+            samCardSprite.draw(ctx, spriteX, spriteY, scale);
+        }
+
+        ctx.fillStyle = '#fbf3f3';
+        ctx.font = '12px monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText(card.label, card.x + card.width / 2, card.y + card.height - 10);
+    });
+}
+
 function update() {
-    commissioner.update();
-    sam.update();
+    hunters.forEach(h => h.update());
     ghost.update();
 }
 
@@ -45,10 +156,16 @@ function draw() {
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     drawGrid();
+    drawCard();
 
-    commissioner.draw(ctx);
-    sam.draw(ctx);
+    hunters.forEach(h => h.draw(ctx));
     ghost.draw(ctx);
+
+    if (dragging && dragSprite) {
+    ctx.globalAlpha = 0.7;
+    dragSprite.draw(ctx);
+    ctx.globalAlpha = 1;
+    }
 }
 
 function gameLoop() {
