@@ -34,18 +34,18 @@ export class Commissioner {
 
     draw(ctx) {
     const sprite = this.state === 'attack' ? this.attackSprite : this.idleSprite;
-    sprite.draw(ctx, this.x - 46, this.y - 50, this.scale);
+    sprite.draw(ctx, this.x - 40, this.y - 50, this.scale);
     }
-}
+};
 
-export class Sam {
+export class Angel {
     constructor(x, y) {
         this.x = x;
         this.y = y;
         this.scale = 1;
 
         this.sprite = new Sprite({
-            src: './assets/hunters/sam-idle.png',
+            src: './assets/hunters/angel.png',
             frameWidth: 96,
             frameHeight: 96,
             frames: 1,
@@ -58,6 +58,6 @@ export class Sam {
     }
 
     draw(ctx) {
-    this.sprite.draw(ctx, this.x - 46, this.y - 50, this.scale);
+        this.sprite.draw(ctx, this.x - 40, this.y - 45, this.scale);
     }
-}
+};

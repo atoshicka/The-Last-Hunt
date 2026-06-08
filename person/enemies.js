@@ -1,9 +1,10 @@
 import { Sprite } from "./sprite.js";
 
 export class Ghost {
-    constructor(x, y) {
+    constructor(x, y, gridX) {
         this.x = x;
         this.y = y;
+        this.gridX = gridX;
         this.scale = 3;
         this.speed = 1;
         this.hp = 50;
@@ -21,7 +22,11 @@ export class Ghost {
     update() {
         if (this.isDead) return;
 
-        this.x -= this.speed;
+        if (this.x > this.gridX) {
+            this.x -= this.speed;
+        } else {
+            this.isDead = true;
+        }
 
         this.sprite.update();
     }
@@ -29,6 +34,7 @@ export class Ghost {
     draw(ctx) {
         if (this.isDead) return;
 
-        this.sprite.draw(ctx, this.x, this.y, this.scale);
+        const drawSize = 32 * this.scale;
+        this.sprite.draw(ctx, this.x - drawSize / 2, this.y - drawSize / 2, this.scale);
     }
-}
+};
