@@ -2,6 +2,7 @@ import { Commissioner, Angel } from './hunters.js';
 import { Ghost } from './enemies.js';
 import { Sprite } from './sprite.js';
 import { Currency } from './currency.js';
+import { Bullet } from './bullet.js';
 
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
@@ -15,8 +16,20 @@ const CELL_SIZE = 96;
 const GRID_X = 150;
 const GRID_Y = 80;
 
+function getCellCenter(col, row) {
+  return {
+    x: GRID_X + col * CELL_SIZE + CELL_SIZE / 2,
+    y: GRID_Y + row * CELL_SIZE + CELL_SIZE / 2,
+  };
+}
+
+const ghost = new Ghost(getCellCenter(9, 1).x, getCellCenter(9, 1).y, GRID_X);
+ghost.row = 1;
+const enemies = [ghost];
+
 const hunters = [];
 const currencies = [];
+const bullets = [];
 let playerMoney = 0;
 
 const cards = [
@@ -46,10 +59,8 @@ canvas.addEventListener('mousedown', (e) => {
 
   for (let i = currencies.length - 1; i >= 0; i--) {
     const c = currencies[i];
-    if (c.collected) continue;
     const dist = Math.hypot(mx - c.x, my - c.y);
     if (dist < 24) {
-      c.collected = true;
       playerMoney += c.value;
       currencies.splice(i, 1);
     }
@@ -106,15 +117,6 @@ canvas.addEventListener('mouseup', (e) => {
   dragSprite = null;
 });
 
-function getCellCenter(col, row) {
-  return {
-    x: GRID_X + col * CELL_SIZE + CELL_SIZE / 2,
-    y: GRID_Y + row * CELL_SIZE + CELL_SIZE / 2,
-  };
-}
-
-const ghost = new Ghost(getCellCenter(9, 1).x, getCellCenter(9, 1).y, GRID_X);
-
 function drawGrid() {
   for (let row = 0; row < ROWS; row++) {
     for (let col = 0; col < COLS; col++) {
@@ -166,7 +168,11 @@ function drawMoney() {
 
 function update() {
   hunters.forEach(h => {
-    h.update();
+    const result = h.update(enemies);
+
+    if (result?.shoot) {
+      bullets.push(new Bullet(result.x, result.y));
+    }
 
     if (h.constructor.name === 'Angel') {
       h.dropTimer = (h.dropTimer || 0) + 1;
@@ -177,8 +183,17 @@ function update() {
     }
   });
 
+  for (let i = bullets.length - 1; i >= 0; i--) {
+    bullets[i].update(enemies);
+    if (bullets[i].dead) bullets.splice(i, 1);
+  }
+
+  enemies.forEach(e => e.update());
+  for (let i = enemies.length - 1; i >= 0; i--) {
+    if (enemies[i].isDead) enemies.splice(i, 1);
+  }
+
   currencies.forEach(c => c.update());
-  ghost.update();
 }
 
 function draw() {
@@ -190,7 +205,8 @@ function draw() {
   drawCards();
 
   hunters.forEach(h => h.draw(ctx));
-  ghost.draw(ctx);
+  enemies.forEach(e => e.draw(ctx));
+  bullets.forEach(b => b.draw(ctx));
   currencies.forEach(c => c.draw(ctx));
 
   if (dragging && dragSprite) {

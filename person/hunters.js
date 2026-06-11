@@ -5,6 +5,10 @@ export class Commissioner {
         this.x = x;
         this.y = y;
         this.scale = 1;
+        this.state = 'idle';
+        this.attackTimer = 0;
+        this.attackSpeed = 90;
+        this.row = null;
 
         this.idleSprite = new Sprite({
             src: './assets/hunters/commissioner-idle.png',
@@ -27,9 +31,26 @@ export class Commissioner {
         this.state = state;
     }
 
-    update() {
+    update(enemies = []) {
+
+        const target = enemies.find(e => e.row === this.row && !e.isDead);
+
+        if (target) {
+            this.state = 'attack';
+            this.attackTimer++;
+            if (this.attackTimer >= this.attackSpeed) {
+                this.attackTimer = 0;
+                return { shoot: true, x: this.x + 48, y: this.y };
+            }
+        } else {
+            this.state = 'idle';
+            this.attackTimer = 0;
+        }
+
         this.idleSprite.update();
         this.attackSprite.update();
+
+        return null;
     }
 
     draw(ctx) {
