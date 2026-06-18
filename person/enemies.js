@@ -6,9 +6,13 @@ export class Ghost {
         this.y = y;
         this.gridX = gridX;
         this.scale = 3;
-        this.speed = 1;
+        this.speed = 0.6;
         this.hp = 50;
         this.isDead = false;
+        this.damage = 20;
+        this.attackTimer = 0;
+        this.attackSpeed = 60;
+        this.target = null;
 
         this.sprite = new Sprite({
             src: './assets/enemies/ghost.png',
@@ -19,11 +23,29 @@ export class Ghost {
         });
     }
 
-    update() {
+    update(hunters = []) {
         if (this.isDead) return;
 
         if (this.x > this.gridX) {
-            this.x -= this.speed;
+            const target = hunters.find(h => 
+                h.row === this.row && Math.abs(h.x - this.x) < 96
+            );
+
+            if (target) {
+                this.target = target;
+                this.attackTimer++;
+                if (this.attackTimer >= this.attackSpeed) {
+                    this.attackTimer = 0;
+                    target.hp -= this.damage;
+
+                    if (target.hp <= 0) {
+                        target.isDead = true;
+                    }
+                }
+            } else {
+                this.target = null;
+                this.x -= this.speed;
+            }
         } else {
             this.isDead = true;
         }
