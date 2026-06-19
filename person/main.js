@@ -3,7 +3,7 @@ import { Ghost } from './enemies.js';
 import { Sprite } from './sprite.js';
 import { Currency } from './currency.js';
 import { Bullet } from './bullet.js';
-import { FireBlast } from './FireBlast.js';
+import { CrossOfExile } from './cross-of-exile.js';
 import { Salt } from './salt.js';
 
 const canvas = document.getElementById('gameCanvas');
@@ -20,6 +20,8 @@ const ROWS = 5;
 const CELL_SIZE = 96;
 const GRID_X = 150;
 const GRID_Y = 80;
+
+let gameState = 'playing';
 
 function getCellCenter(col, row) {
   return {
@@ -40,7 +42,7 @@ const SPAWN_INTERVAL = 8 * 60;
 const hunters = [];
 const currencies = [];
 const bullets = [];
-const fireBlasts = [];
+const crossOfExile = [];
 let playerMoney = 50;
 
 const cards = [
@@ -76,9 +78,25 @@ let dragX = 0;
 let dragY = 0;
 
 canvas.addEventListener('mousedown', (e) => {
+
   const rect = canvas.getBoundingClientRect();
   const mx = e.clientX - rect.left;
   const my = e.clientY - rect.top;
+
+  if (gameState !== 'playing') {
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+    const btnW = 220;
+    const btnH = 50;
+    const btnX = centerX - btnW / 2;
+    const btnY = centerY + 20;
+
+    if (mx >= btnX && mx <= btnX + btnW &&
+        my >= btnY && my <= btnY + btnH) {
+          restartGame();
+    }
+    return;
+  }
 
   for (let i = currencies.length - 1; i >= 0; i--) {
     const c = currencies[i];
@@ -245,6 +263,8 @@ function drawMoney() {
 }
 
 function update() {
+  if (gameState !== 'playing') return;
+
   waveTimer++;
 
   if (waveTimer >= WAVE_DELAY && currentWave < spawnQueue.length) {
@@ -273,7 +293,7 @@ function update() {
       bullets.push(new Bullet(result.x, result.y));
     }
     if (result?.flame) {
-      fireBlasts.push(new FireBlast(result.x, result.y));
+      crossOfExile.push(new CrossOfExile(result.x, result.y));
     }
 
     if (h.constructor.name === 'Angel') {
@@ -294,20 +314,68 @@ function update() {
     if (bullets[i].dead) bullets.splice(i, 1);
   }
 
-  for (let i = fireBlasts.length - 1; i >= 0; i--) {
-    fireBlasts[i].update(enemies);
-    if (fireBlasts[i].dead) fireBlasts.splice(i, 1);
+  for (let i = crossOfExile.length - 1; i >= 0; i--) {
+    crossOfExile[i].update(enemies);
+    if (crossOfExile[i].dead) crossOfExile.splice(i, 1);
   }
 
-  enemies.forEach(e => e.update(hunters));
+  enemies.forEach(e => {
+    e.update(hunters);
+      if (e.reachedEnd) {
+        gameState = 'gameover';
+        showOverlay();
+      }
+  });
+
   for (let i = hunters.length - 1; i >= 0; i--) {
     if (hunters[i].isDead) hunters.splice(i, 1);
   }
   for (let i = enemies.length - 1; i >= 0; i--) {
     if (enemies[i].isDead) enemies.splice(i, 1);
   }
+  
+  if (currentWave >= spawnQueue.length && enemies.length === 0) {
+    gameState = 'win';
+    showOverlay();
+  }
 
   currencies.forEach(c => c.update());
+}
+
+function restartGame() {
+  hunters.length = 0;
+  enemies.length = 0;
+  bullets.length = 0;
+  crossOfExile.length = 0;
+  currencies.length = 0;
+  playerMoney = 50;
+  waveTimer = 0;
+  spawnTimer = 0;
+  currentWave = 0;
+  gameState = 'playing';
+  cards.forEach(card => card.timer = 0);
+}
+
+const overlay = document.getElementById('overlay');
+const overlayTitle = document.getElementById('overlay-title');
+const overlayBtn = document.getElementById('overlay-btn');
+
+overlayBtn.addEventListener('click', () => {
+  overlay.classList.add('hidden');
+  restartGame();
+});
+
+function showOverlay() {
+  if (gameState === 'gameover') {
+    overlayTitle.style.color = '#ff4444';
+    overlayTitle.textContent = 'Поражение...';
+    overlayBtn.textContent = 'Начать заново';
+  } else if (gameState === 'win') {
+    overlayTitle.style.color = '#ffd700';
+    overlayTitle.textContent = 'Уровень пройден!';
+    overlayBtn.textContent = 'Еще раз';
+  }
+  overlay.classList.remove('hidden');
 }
 
 function drawWaveProgress() {
@@ -341,7 +409,7 @@ function drawWaveProgress() {
   const sourceX = 0;
   const sourceY = 0;
   const sourceWidth = 32;
-  const sourceHeight = 64;
+  const sourceHeight = 32;
 
   const displayScale = 0.35; 
 
@@ -371,7 +439,7 @@ function draw() {
   hunters.forEach(h => h.draw(ctx));
   enemies.forEach(e => e.draw(ctx));
   bullets.forEach(b => b.draw(ctx));
-  fireBlasts.forEach(f => f.draw(ctx));
+  crossOfExile.forEach(f => f.draw(ctx));
   currencies.forEach(c => c.draw(ctx));
 
   if (dragging && dragSprite) {

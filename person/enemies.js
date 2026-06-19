@@ -13,6 +13,7 @@ export class Ghost {
         this.attackTimer = 0;
         this.attackSpeed = 60;
         this.target = null;
+        this.reachedEnd = false;
 
         this.sprite = new Sprite({
             src: './assets/enemies/ghost.png',
@@ -26,7 +27,7 @@ export class Ghost {
     update(hunters = []) {
         if (this.isDead) return;
 
-        if (this.x > this.gridX) {
+        if (this.x > this.gridX + 30) {
             const target = hunters.find(h => 
                 h.row === this.row && Math.abs(h.x - this.x) < 96
             );
@@ -48,6 +49,7 @@ export class Ghost {
             }
         } else {
             this.isDead = true;
+            this.reachedEnd = true;
         }
 
         this.sprite.update();
