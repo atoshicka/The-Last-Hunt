@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Last Hunt</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <div id="main-menu" class="screen">
+    <h1 class="menu-title">The Last Hunt</h1>
+    <div class="menu-buttons">
+      <button class="menu-btn primary" id="btn-play">Играть</button>
+      <button class="menu-btn secondary" id="btn-levels">Выбор уровня</button>
+    </div>
+  </div>
+
+  <div id="level-select" class="screen hidden">
+    <h2 class="menu-title">Уровни</h2>
+    <div id="level-cards" class="level-cards"></div>
+    
+    <div class="level-select-buttons">
+      <button class="menu-btn secondary hidden" id="btn-continue">▶ Продолжить</button>
+      <button class="menu-btn-back" id="btn-back-menu">Главное меню</button>
+    </div>
+  </div>
+
+  <div id="game-screen" class="screen hidden">
+    <button id="btn-levels-ingame" class="btn-ingame">☰</button>
+    <canvas id="gameCanvas"></canvas>
+    <div id="overlay" class="overlay hidden">
+      <div class="overlay-content">
+        <h1 id="overlay-title"></h1>
+        <div class="overlay-buttons">
+          <button id="overlay-btn"></button>
+          <button id="overlay-levels-btn">Выбор уровня</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <button class="btn-codex-open">?</button>
+
+  <div id="codex-screen" class="codex-overlay hidden">
+    <div class="codex-book">
+      <button id="btn-codex-close" class="codex-close">✕</button>
+      <div id="codex-page" class="codex-page"></div>
+      <div class="codex-nav">
+        <button id="btn-codex-prev" class="codex-arrow">◀</button>
+        <button id="btn-codex-next" class="codex-arrow">▶</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="main.js" type="module"></script>
+</body>
+</html>

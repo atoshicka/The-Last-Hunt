@@ -1,0 +1,58 @@
+import { Sprite } from '../Sprite.js';
+
+export class Ghost {
+  constructor(x, y, gridX) {
+    this.x = x;
+    this.y = y;
+    this.gridX = gridX;
+    this.scale = 3;
+    this.speed = 0.6;
+    this.hp = 120;
+    this.isDead = false;
+    this.damage = 10;
+    this.attackTimer = 0;
+    this.attackSpeed = 90;
+    this.target = null;
+    this.reachedEnd = false;
+    this.row = null;
+
+    this.sprite = new Sprite({
+      src: 'assets/enemies/ghost.png',
+      frameWidth: 32, frameHeight: 32, frames: 2, speed: 12,
+    });
+  }
+
+  update(hunters = []) {
+    if (this.isDead) return;
+
+    if (this.x > this.gridX + 30) {
+      const target = hunters.find(h =>
+        h.row === this.row && Math.abs(h.x - this.x) < 96
+      );
+
+      if (target) {
+        this.target = target;
+        this.attackTimer++;
+        if (this.attackTimer >= this.attackSpeed) {
+          this.attackTimer = 0;
+          target.hp -= this.damage;
+          if (target.hp <= 0) target.isDead = true;
+        }
+      } else {
+        this.target = null;
+        this.x -= this.speed;
+      }
+    } else {
+      this.isDead = true;
+      this.reachedEnd = true;
+    }
+
+    this.sprite.update();
+  }
+
+  draw(ctx) {
+    if (this.isDead) return;
+    const drawSize = 32 * this.scale;
+    this.sprite.draw(ctx, this.x - drawSize / 2, this.y - drawSize / 2, this.scale);
+  }
+}

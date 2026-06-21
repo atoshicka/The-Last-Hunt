@@ -3,7 +3,7 @@ export class CrossOfExile {
         this.x = x;
         this.y = y;
         this.dead = false;
-        this.damage = 40;
+        this.damage = 30;
         this.timer = 0;
         this.duration = 30;
         this.radius = 45;

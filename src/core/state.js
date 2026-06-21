@@ -1,0 +1,36 @@
+export const state = {
+  gameState: 'playing',
+  currentLevel: 0,
+  cards: [],
+  hunters: [],
+  enemies: [],
+  currencies: [],
+  bullets: [],
+  crossOfExile: [],
+  playerMoney: 50,
+  spawnQueue: [],
+  spawnTimer: 0,
+  waveTimer: 0,
+  currentWave: 0,
+  waveDelay: 10 * 60,
+  spawnInterval: 8 * 60,
+  droppedLansCard: null,
+  gameLoopStarted: false,
+};
+
+export function resetState(level) {
+  state.hunters = [];
+  state.enemies = [];
+  state.currencies = [];
+  state.bullets = [];
+  state.crossOfExile = [];
+  state.droppedLansCard = null;
+  state.playerMoney = level.startMoney;
+  state.spawnQueue = level.spawnQueue;
+  state.spawnTimer = 0;
+  state.waveTimer = 0;
+  state.currentWave = 0;
+  state.waveDelay = level.waveDelay;
+  state.spawnInterval = level.spawnInterval;
+  state.gameState = 'playing';
+}
