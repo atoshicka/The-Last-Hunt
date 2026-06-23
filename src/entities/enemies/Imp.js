@@ -1,29 +1,29 @@
-import { Sprite } from '../Sprite.js';
+import { Sprite } from "../Sprite.js";
 
-export class Ghost {
-  constructor(x, y, gridX) {
-    this.x = x;
-    this.y = y;
-    this.gridX = gridX;
-    this.scale = 3;
-    this.speed = 0.6;
-    this.hp = 120;
-    this.isDead = false;
-    this.damage = 20;
-    this.attackTimer = 0;
-    this.attackSpeed = 90;
-    this.target = null;
-    this.reachedEnd = false;
-    this.row = null;
+export class Imp {
+    constructor(x, y, gridX) {
+        this.x = x;
+        this.y = y;
+        this.gridX = gridX;
+        this.scale = 1.5;
+        this.speed = 1;
+        this.hp = 100;
+        this.isDead = false;
+        this.damage = 10;
+        this.attackTimer = 0;
+        this.attackSpeed = 60;
+        this.target = null;
+        this.reachedEnd = false;
+        this.row = null;
 
-    this.sprite = new Sprite({
-      src: 'assets/enemies/ghost.png',
-      frameWidth: 32, 
-      frameHeight: 32, 
-      frames: 2, 
-      speed: 12,
-    });
-  }
+        this.sprite = new Sprite({
+            src: 'assets/enemies/imp.png',
+            frameWidth: 64,
+            frameHeight: 64,
+            frames: 2,
+            speed: 20,
+        });
+    }
 
   update(hunters = []) {
     if (this.isDead) return;
@@ -55,7 +55,7 @@ export class Ghost {
 
   draw(ctx) {
     if (this.isDead) return;
-    const drawSize = 32 * this.scale;
+    const drawSize = 64 * this.scale;
     this.sprite.draw(ctx, this.x - drawSize / 2, this.y - drawSize / 2, this.scale);
   }
 }

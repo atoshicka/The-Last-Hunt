@@ -54,6 +54,15 @@ const entries = [
         spriteSize: 64,
         scale: 2.5,
     },
+
+    {
+        name: 'Ciul',
+        role: 'Hunters',
+        description: 'Охотник, способная своими пулями пронзить всех монстров на своем пути. С небольшим шансом может выстрелить пулей с солью, что замедлит врагов.',
+        sprite: new Sprite({ src: 'assets/hunters/ciul-idle.png', frameWidth: 96, frameHeight: 96, frames: 1, speed: 1 }),
+        spriteSize: 64,
+        scale: 2.5,
+    },
 ];
 
 let currentIndex = 0;

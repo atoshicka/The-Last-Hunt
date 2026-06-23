@@ -1,0 +1,20 @@
+export const level3 = {
+  spawnQueue: [
+    { count: 1, type: 'ghost' },
+    { count: 2, type: 'ghost' },
+    { count: 3, type: 'imp' },
+    { count: 1, type: 'dog' },
+    { count: 4, type: 'imp' },
+    { count: 3, type: 'imp' },
+    { count: 2, type: 'ghost' },
+    { count: 2, type: 'dog' },
+    { count: 6, type: 'imp' },
+    { count: 4, type: 'imp' },
+    { count: 3, type: 'ghost' },
+    { count: 3, type: 'dog' },
+  ],
+  availableCards: ['comissar', 'angel', 'salt', 'lans', 'ciul'],
+  startMoney: 50,
+  waveDelay: 20 * 60,
+  spawnInterval: 14 * 60,
+};

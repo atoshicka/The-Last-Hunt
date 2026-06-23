@@ -7,6 +7,7 @@ export const state = {
   currencies: [],
   bullets: [],
   crossOfExile: [],
+  piercingShot: [],
   playerMoney: 50,
   spawnQueue: [],
   spawnTimer: 0,
@@ -16,6 +17,8 @@ export const state = {
   spawnInterval: 8 * 60,
   droppedLansCard: null,
   gameLoopStarted: false,
+  waveEnemyQueue: null,
+  waveEnemyTimer: 0,
 };
 
 export function resetState(level) {
@@ -24,6 +27,7 @@ export function resetState(level) {
   state.currencies = [];
   state.bullets = [];
   state.crossOfExile = [];
+  state.piercingShot = [];
   state.droppedLansCard = null;
   state.playerMoney = level.startMoney;
   state.spawnQueue = level.spawnQueue;
@@ -33,4 +37,6 @@ export function resetState(level) {
   state.waveDelay = level.waveDelay;
   state.spawnInterval = level.spawnInterval;
   state.gameState = 'playing';
+  state.waveEnemyQueue = null;
+  state.waveEnemyTimer = 0;
 }

@@ -3,7 +3,7 @@ export class Bullet {
         this.x = x;
         this.y = y + 6;
         this.speed = 5;
-        this.damage = 20;
+        this.damage = 25;
         this.dead = false;
     }
 
