@@ -120,7 +120,7 @@ body {
 }
 
 .level-card:hover:not(.locked) {
-  border-color: #534ab7;
+  border-color: #ffd700;
   transform: translateY(-6px);
 }
 
@@ -143,10 +143,23 @@ body {
   letter-spacing: 1px;
 }
 
-.level-card .level-status {
-  font-size: 11px;
-  color: #ffd700;
-  letter-spacing: 1px;
+.level-card .level-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  font-size: 14px;
+  font-weight: bold;
+  line-height: 1;
+}
+
+.level-card .level-badge.completed {
+  color: #00ffcc;
+  text-shadow: 0 0 8px rgba(0, 255, 204, 0.6);
+}
+
+.level-card:hover:not(.locked):not(.completed) {
+  border-color: #534ab7;
+  transform: translateY(-6px);
 }
 
 .level-card.locked .lock-icon {
@@ -289,14 +302,14 @@ canvas {
 .codex-book {
   position: relative;
   width: 380px;
+  height: 540px;
   background: #0f0f1e;
   border: 2px solid #2a2a44;
   border-top: 4px solid #534ab7;
-  padding: 40px 36px 30px;
+  padding: 35px 36px 25px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 14px;
 }
 
 .codex-book::before {
@@ -311,7 +324,7 @@ canvas {
 
 .codex-close {
   position: absolute;
-  top: 10px;
+  top: 12px;
   right: 12px;
   background: transparent;
   border: none;
@@ -330,6 +343,7 @@ canvas {
   font-size: 11px;
   letter-spacing: 3px;
   text-transform: uppercase;
+  margin-bottom: 14px;
 }
 
 .codex-role.hunter {
@@ -349,6 +363,7 @@ canvas {
   background: #0a0a14;
   border: 1px solid #2a2a44;
   image-rendering: pixelated;
+  margin-bottom: 16px;
 }
 
 .codex-sprite-wrap canvas {
@@ -364,32 +379,43 @@ canvas {
   letter-spacing: 1px;
 }
 
-.codex-divider {
-  color: #2a2a44;
-  letter-spacing: 4px;
+.codex-name {
+  font-size: 24px;
+  font-weight: bold;
+  color: #f3f3f3;
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+  text-align: center;
 }
 
 .codex-desc {
   font-size: 13px;
   color: #8888aa;
   text-align: center;
-  line-height: 1.7;
-  max-width: 280px;
+  line-height: 1.6;
+  max-width: 290px;
+  height: 68px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .codex-counter {
   font-size: 11px;
-  color: #2a2a44;
+  color: #55557a; 
   letter-spacing: 2px;
-  margin-top: 4px;
+  margin-top: auto; 
+  padding-top: 15px;
+  text-align: center;
 }
 
 .codex-nav {
   display: flex;
   gap: 40px;
-  margin-top: 4px;
+  width: 100%;
+  justify-content: center;
+  margin-top: 15px;
 }
-
 .codex-arrow {
   background: transparent;
   border: 1px solid #2a2a44;
@@ -404,4 +430,12 @@ canvas {
 .codex-arrow:hover {
   border-color: #534ab7;
   color: #f3f3f3;
+}
+
+#codex-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  flex-grow: 1;
 }

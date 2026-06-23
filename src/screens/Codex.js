@@ -4,7 +4,7 @@ const entries = [
     {
         name: 'Comissar',
         role: 'Hunter',
-        description: 'Комиссар атакует из ружья железными пулями',
+        description: 'Охотник, атакующий железными пулями.',
         sprite: new Sprite({ src: 'assets/hunters/comissar-idle.png', frameWidth: 96, frameHeight: 96, frames: 1, speed: 1 }),
         spriteSize: 96,
         scale: 2,
@@ -13,7 +13,7 @@ const entries = [
     {
         name: 'Lans',
         role: 'Hunter',
-        description: 'Охотник, который атакует монстров своей магией экзорцизма.',
+        description: 'Охотник, который воздействует на монстров своей магией экзорцизма.',
         sprite: new Sprite({ src: 'assets/hunters/lans-idle.png', frameWidth: 96, frameHeight: 96, frames: 1, speed: 1 }),
         spriteSize: 96,
         scale: 2,
@@ -22,7 +22,7 @@ const entries = [
     {
         name: 'Angel',
         role: 'Support',
-        description: 'Ангел, выступающий в роли поддержки. Имеет способность создавать искры, необходимые для призыва других охотников.',
+        description: 'Ангел, имеющий способность создавать искры, необходимые для призыва других охотников.',
         sprite: new Sprite({ src: 'assets/hunters/angel.png', frameWidth: 96, frameHeight: 96, frames: 1, speed: 1 }),
         spriteSize: 96,
         scale: 2,
@@ -31,7 +31,7 @@ const entries = [
     {
         name: 'Salt',
         role: 'Protection',
-        description: 'Монстры не любят соль. Они не могут пройти сквозь нее. Она задерживает их на определенное количество времени, пока те в свою очередь не смогут избавиться от нее.',
+        description: 'Предмет, способный задерживать монстров на определенное время.',
         sprite: new Sprite({ src: 'assets/others/full-salt.png', frameWidth: 96, frameHeight: 96, frames: 1, speed: 1 }),
         spriteSize: 96,
         scale: 2,

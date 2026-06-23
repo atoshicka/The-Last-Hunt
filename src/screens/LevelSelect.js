@@ -24,13 +24,18 @@ function renderLevelCards() {
     const unlocked = isLevelUnlocked(index);
 
     const card = document.createElement('div');
-    card.className = `level-card ${unlocked ? '' : 'locked'}`;
+    card.className = `level-card ${unlocked ? '' : 'locked'} ${completed ? 'completed' : ''}`;
 
-    card.innerHTML = `
-      ${!unlocked ? '<span class="lock-icon">?</span>' : ''}
-      <span class="level-number">${index + 1}</span>
-      ${completed ? '<span class="level-status">✓ Пройден</span>' : ''}
-    `;
+    if (unlocked) {
+      card.innerHTML = `
+        ${completed ? '<span class="level-badge">✓</span>' : ''}
+        <span class="level-number">${index + 1}</span>
+      `;
+    } else {
+      card.innerHTML = `
+        <span class="lock-icon">?</span>
+      `;
+    }
 
     if (unlocked) {
       card.addEventListener('click', () => {
