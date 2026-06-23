@@ -5,6 +5,7 @@ export const allCards = {
   angel: { type: 'angel', label: 'angel', width: 110, height: 90, cooldown: 5,  cost: 50  },
   salt: { type: 'salt', label: 'salt', width: 110, height: 90, cooldown: 10, cost: 50  },
   lans: { type: 'lans', label: 'lans', width: 110, height: 90, cooldown: 10, cost: 200 },
+  ciul: {type: 'ciul', label: 'ciul', width: 110, height: 90, cooldown: 8, cost: 0},
 };
 
 export const cardSprites = {
@@ -12,4 +13,5 @@ export const cardSprites = {
   angel: new Sprite({ src: 'assets/hunters/angel.png', frameWidth: 96, frameHeight: 96, frames: 1, speed: 1 }),
   salt: new Sprite({ src: 'assets/others/full-salt.png', frameWidth: 96, frameHeight: 96, frames: 1, speed: 1 }),
   lans: new Sprite({ src: 'assets/hunters/lans-idle.png', frameWidth: 96, frameHeight: 96, frames: 1, speed: 1 }),
+  ciul: new Sprite({ src: 'assets/hunters/ciul-idle.png', frameWidth: 96, frameHeight: 96, frames: 1, speed: 1 }),
 };

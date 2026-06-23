@@ -3,8 +3,10 @@ import { state, resetState } from '../core/state.js';
 import { allCards, cardSprites } from './config.js';
 import { Ghost } from '../entities/enemies/Ghost.js';
 import { HellishDog } from '../entities/enemies/HellishDog.js';
+import { Imp } from '../entities/enemies/Imp.js';
 import { Bullet } from '../entities/projectiles/Bullet.js';
 import { CrossOfExile } from '../entities/projectiles/CrossOfExile.js';
+import { PiercingShot } from '../entities/projectiles/PiercingShot.js';
 import { Currency } from '../entities/Currency.js';
 import { showOverlay } from './Overlay.js';
 
@@ -51,21 +53,46 @@ export function update(levels) {
 
   if (state.waveTimer >= state.waveDelay && state.currentWave < state.spawnQueue.length) {
     state.spawnTimer++;
-    if (state.spawnTimer >= state.spawnInterval) {
-      state.spawnTimer = 0;
-      const wave = state.spawnQueue[state.currentWave];
 
-      for (let i = 0; i < wave.count; i++) {
-        const row = Math.floor(Math.random() * ROWS);
-        const pos = getCellCenter(9, row);
-        const enemy = wave.type === 'dog'
-          ? new HellishDog(pos.x, pos.y, GRID_X)
-          : new Ghost(pos.x, pos.y, GRID_X);
-        enemy.row = row;
-        state.enemies.push(enemy);
+    if (state.spawnTimer >= state.spawnInterval) {
+
+      if (!state.waveEnemyQueue) {
+        const wave = state.spawnQueue[state.currentWave];
+        state.waveEnemyQueue = [];
+        for (let i = 0; i < wave.count; i++) {
+          state.waveEnemyQueue.push({
+            type: wave.type,
+            delay: i * 90,
+            spawned: false,
+          });
+        }
+        state.waveEnemyTimer = 0;
       }
 
-      state.currentWave++;
+      state.waveEnemyTimer++;
+
+      state.waveEnemyQueue.forEach(entry => {
+        if (!entry.spawned && state.waveEnemyTimer >= entry.delay) {
+          entry.spawned = true;
+          const row = Math.floor(Math.random() * ROWS);
+          const pos = getCellCenter(9, row);
+
+          let enemy;
+          if (entry.type === 'dog') enemy = new HellishDog(pos.x, pos.y, GRID_X);
+          else if (entry.type === 'imp') enemy = new Imp(pos.x, pos.y, GRID_X);
+          else enemy = new Ghost(pos.x, pos.y, GRID_X);
+
+          enemy.row = row;
+          state.enemies.push(enemy);
+        }
+      });
+
+      if (state.waveEnemyQueue.every(e => e.spawned)) {
+        state.waveEnemyQueue = null;
+        state.waveEnemyTimer = 0;
+        state.spawnTimer = 0;
+        state.currentWave++;
+      }
     }
   }
 
@@ -73,6 +100,7 @@ export function update(levels) {
     const result = h.update ? h.update(state.enemies) : null;
     if (result?.shoot) state.bullets.push(new Bullet(result.x, result.y));
     if (result?.flame) state.crossOfExile.push(new CrossOfExile(result.x, result.y));
+    if (result?.piercingShot) state.piercingShot.push(new PiercingShot(result.x, result.y));
 
     if (h.constructor.name === 'Angel') {
       h.dropTimer = (h.dropTimer || 0) + 1;
@@ -95,11 +123,16 @@ export function update(levels) {
     if (state.crossOfExile[i].dead) state.crossOfExile.splice(i, 1);
   }
 
+  for (let i = state.piercingShot.length - 1; i >= 0; i--) {
+    state.piercingShot[i].update(state.enemies);
+    if (state.piercingShot[i].dead) state.piercingShot.splice(i, 1);
+  }
+
   state.enemies.forEach(e => {
     e.update(state.hunters);
     if (e.reachedEnd) {
       state.gameState = 'gameover';
-      showOverlay('gameover', state.currentLevel, levelsCount);
+      showOverlay('gameover', state.currentLevel, levels.length);
     }
   });
 
@@ -110,20 +143,29 @@ export function update(levels) {
     if (state.enemies[i].isDead) state.enemies.splice(i, 1);
   }
 
-  if (state.currentLevel === 0 && state.currentWave >= state.spawnQueue.length && state.enemies.length === 0 && !state.droppedLansCard) {
-    state.gameState = 'cardDrop';
-    state.droppedLansCard = {
-      x: Math.random() * (canvas.width - 300) + 200,
-      y: Math.random() * (canvas.height - 250) + 100,
-      width: 110,
-      height: 130,
-      bobTimer: 0,
-    };
-  }
-
-  if (state.currentLevel > 0 && state.currentWave >= state.spawnQueue.length && state.enemies.length === 0) {
-    state.gameState = 'win';
-    showOverlay('win', state.currentLevel, levelsCount);
+  if (state.currentWave >= state.spawnQueue.length && state.enemies.length === 0 && !state.waveEnemyQueue) {
+    if (state.currentLevel === 0 && !state.droppedLansCard) {
+      state.gameState = 'cardDrop';
+      state.droppedLansCard = {
+        x: Math.random() * (canvas.width - 300) + 200,
+        y: Math.random() * (canvas.height - 250) + 100,
+        width: 110,
+        height: 130,
+        bobTimer: 0,
+      };
+    } else if (state.currentLevel === 1 && !state.droppedCiulCard) {
+      state.gameState = 'cardDrop';
+      state.droppedCiulCard = {
+        x: Math.random() * (canvas.width - 300) + 200,
+        y: Math.random() * (canvas.height - 250) + 100,
+        width: 110,
+        height: 130,
+        bobTimer: 0,
+      };
+    } else if (state.currentLevel >= 2) {
+      state.gameState = 'win';
+      showOverlay('win', state.currentLevel, levels.length);
+    }
   }
 
   state.currencies.forEach(c => c.update());
@@ -135,23 +177,27 @@ export function draw() {
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
   drawGrid();
-  drawCards();
 
   state.hunters.forEach(h => h.draw(ctx));
   state.enemies.forEach(e => e.draw(ctx));
+
   state.bullets.forEach(b => b.draw(ctx));
   state.crossOfExile.forEach(f => f.draw(ctx));
+  state.piercingShot.forEach(p => p.draw(ctx));
+
+  drawCards();
+
   state.currencies.forEach(c => c.draw(ctx));
+
+  drawDroppedCards();
+  drawWaveProgress();
+  drawMoney();
 
   if (state.dragSprite) {
     ctx.globalAlpha = 0.7;
     state.dragSprite.draw(ctx);
     ctx.globalAlpha = 1;
   }
-
-  drawDroppedLansCard();
-  drawWaveProgress();
-  drawMoney();
 }
 
 function drawGrid() {
@@ -252,26 +298,28 @@ function drawWaveProgress() {
   }
 }
 
-function drawDroppedLansCard() {
-  if (!state.droppedLansCard) return;
+function drawDroppedCards() {
+  const drawCard = (c, spriteKey, label) => {
+    if (!c) return;
+    if (c.bobTimer < Math.PI) c.bobTimer = (c.bobTimer || 0) + 0.08;
+    const bobY = c.y - Math.sin(c.bobTimer) * 20;
 
-  const c = state.droppedLansCard;
-  if (c.bobTimer < Math.PI) c.bobTimer = (c.bobTimer || 0) + 0.08;
-  const bobY = c.y - Math.sin(c.bobTimer) * 20;
+    ctx.fillStyle = '#1a1a2e';
+    ctx.fillRect(c.x, bobY, c.width, c.height);
+    ctx.strokeStyle = '#534ab7';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(c.x, bobY, c.width, c.height);
 
-  ctx.fillStyle = '#1a1a2e';
-  ctx.fillRect(c.x, bobY, c.width, c.height);
-  ctx.strokeStyle = '#534ab7';
-  ctx.lineWidth = 2;
-  ctx.strokeRect(c.x, bobY, c.width, c.height);
+    const scale = 0.6;
+    const spriteX = c.x + c.width / 2 - (96 * scale) / 2;
+    cardSprites[spriteKey]?.draw(ctx, spriteX, bobY + 10, scale);
 
-  const scale = 0.6;
-  const drawSize = 96 * scale;
-  const spriteX = c.x + c.width / 2 - drawSize / 2;
-  cardSprites['lans']?.draw(ctx, spriteX, bobY + 10, scale);
+    ctx.fillStyle = '#fbf3f3';
+    ctx.font = '12px monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText(label, c.x + c.width / 2, bobY + c.height - 10);
+  };
 
-  ctx.fillStyle = '#fbf3f3';
-  ctx.font = '12px monospace';
-  ctx.textAlign = 'center';
-  ctx.fillText('lans', c.x + c.width / 2, bobY + c.height - 10);
+  drawCard(state.droppedLansCard, 'lans', 'lans');
+  drawCard(state.droppedCiulCard, 'ciul', 'ciul');
 }

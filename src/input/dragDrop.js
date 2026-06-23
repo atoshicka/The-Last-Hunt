@@ -4,12 +4,14 @@ import { Comissar } from '../entities/hunters/Comissar.js';
 import { Angel } from '../entities/hunters/Angel.js';
 import { Lans } from '../entities/hunters/Lans.js';
 import { Salt } from '../entities/Salt.js';
+import { Ciul } from '../entities/hunters/Ciul.js';
 
 function createDragSprite(type, mx, my) {
   if (type === 'comissar') return new Comissar(mx, my);
   if (type === 'angel') return new Angel(mx, my);
   if (type === 'lans') return new Lans(mx, my);
   if (type === 'salt') return new Salt(mx, my);
+  if (type === 'ciul') return new Ciul(mx, my);
   return null;
 }
 
@@ -19,6 +21,7 @@ function placeHunter(type, pos, col, row) {
   else if (type === 'angel') h = new Angel(pos.x, pos.y);
   else if (type === 'lans') h = new Lans(pos.x, pos.y);
   else if (type === 'salt') h = new Salt(pos.x, pos.y);
+  else if (type === 'ciul') h = new Ciul(pos.x, pos.y);
   if (!h) return;
 
   h.col = col;
@@ -41,10 +44,14 @@ export function initDragDrop() {
     const mx = e.clientX - rect.left;
     const my = e.clientY - rect.top;
 
-    if (state.gameState === 'cardDrop' && state.droppedLansCard) {
-      const c = state.droppedLansCard;
-      if (mx >= c.x && mx <= c.x + c.width && my >= c.y && my <= c.y + c.height) {
+    if (state.gameState === 'cardDrop') {
+      const clickedCard = [state.droppedLansCard, state.droppedCiulCard].find(c => 
+        c && mx >= c.x && mx <= c.x + c.width && my >= c.y && my <= c.y + c.height
+      );
+
+      if (clickedCard) {
         state.droppedLansCard = null;
+        state.droppedCiulCard = null;
         state.gameState = 'win';
         canvas.dispatchEvent(new CustomEvent('gameWin'));
       }
