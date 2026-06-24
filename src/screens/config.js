@@ -1,11 +1,11 @@
 import { Sprite } from '../entities/Sprite.js';
 
 export const allCards = {
-  comissar: { type: 'comissar', label: 'comissar', width: 110, height: 90, cooldown: 6,  cost: 100 },
-  angel: { type: 'angel', label: 'angel', width: 110, height: 90, cooldown: 5,  cost: 50  },
-  salt: { type: 'salt', label: 'salt', width: 110, height: 90, cooldown: 10, cost: 50  },
-  lans: { type: 'lans', label: 'lans', width: 110, height: 90, cooldown: 10, cost: 200 },
-  ciul: {type: 'ciul', label: 'ciul', width: 110, height: 90, cooldown: 8, cost: 0},
+  comissar: { type: 'comissar', label: 'comissar', width: 110, height: 80, cooldown: 6,  cost: 100 },
+  angel: { type: 'angel', label: 'angel', width: 110, height: 80, cooldown: 5,  cost: 50  },
+  salt: { type: 'salt', label: 'salt', width: 110, height: 80, cooldown: 10, cost: 50  },
+  lans: { type: 'lans', label: 'lans', width: 110, height: 80, cooldown: 10, cost: 200 },
+  ciul: {type: 'ciul', label: 'ciul', width: 110, height: 80, cooldown: 8, cost: 100},
 };
 
 export const cardSprites = {

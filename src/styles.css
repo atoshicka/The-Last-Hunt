@@ -439,3 +439,12 @@ canvas {
   width: 100%;
   flex-grow: 1;
 }
+
+.level-select-buttons {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 20px; 
+  width: 400px; 
+  margin-top: 20px;
+}

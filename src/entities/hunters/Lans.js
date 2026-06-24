@@ -7,7 +7,7 @@ export class Lans {
         this.scale = 1;
         this.state = 'idle';
         this.attackTimer = 0;
-        this.attackSpeed = 70;
+        this.attackSpeed = 120;
         this.row = null;
         this.hp = 150;
         this.isDead = false;

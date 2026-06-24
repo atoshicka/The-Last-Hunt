@@ -13,10 +13,14 @@ export class PiercingShot {
     }
 
     update(enemies) {
+        if (this.dead) return;
+
         this.x += this.speed;
 
-        enemies.forEach(e => {
-            if (e.isDead || this.hitEnemies.has(e)) return;
+        for (let i = 0; i < enemies.length; i++) {
+            const e = enemies[i];
+
+            if (e.isDead || this.hitEnemies.has(e)) continue;
 
             const dist = Math.hypot(this.x - e.x, this.y - e.y);
             if (dist < 30) {
@@ -25,22 +29,24 @@ export class PiercingShot {
 
                 this.hitEnemies.add(e);
 
-                if (this.isSalt && !e.isSlowed && !e.isDead) {
-                    e.isSlowed = true;
+                if (this.isSalt) {
+                    if (!e.isSlowed && !e.isDead) {
+                        e.isSlowed = true;
+                        const originalSpeed = e.speed;
+                        e.speed = originalSpeed * 0.5; 
 
-                    const originalSpeed = e.speed;
-
-                    e.speed = originalSpeed * 0.5; 
-
-                    setTimeout(() => {
-                        if (e && !e.isDead) {
-                            e.speed = originalSpeed;
-                            e.isSlowed = false;
-                        }
-                    }, 3000);
+                        setTimeout(() => {
+                            if (e && !e.isDead) {
+                                e.speed = originalSpeed;
+                                e.isSlowed = false;
+                            }
+                        }, 3000);
+                    }
+                    this.dead = true;
+                    break; 
                 }
             }
-        });
+        }
 
         if (this.x > 1200) {
             this.dead = true;

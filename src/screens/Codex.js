@@ -60,6 +60,15 @@ const entries = [
         role: 'Hunters',
         description: 'Охотник, способная своими пулями пронзить всех монстров на своем пути. С небольшим шансом может выстрелить пулей с солью, что замедлит врагов.',
         sprite: new Sprite({ src: 'assets/hunters/ciul-idle.png', frameWidth: 96, frameHeight: 96, frames: 1, speed: 1 }),
+        spriteSize: 92,
+        scale: 1,
+    },
+
+    {
+        name: 'Imp',
+        role: 'Enemies',
+        description: 'Чертенок, который несмотря на то, что не может нанести значительный урон, очень быстрый.',
+        sprite: new Sprite({ src: 'assets/enemies/imp.png', frameWidth: 96, frameHeight: 96, frames: 1, speed: 1 }),
         spriteSize: 64,
         scale: 2.5,
     },

@@ -6,8 +6,8 @@ export class Ghost {
     this.y = y;
     this.gridX = gridX;
     this.scale = 3;
-    this.speed = 0.6;
-    this.hp = 120;
+    this.speed = 0.7;
+    this.hp = 130;
     this.isDead = false;
     this.damage = 20;
     this.attackTimer = 0;
