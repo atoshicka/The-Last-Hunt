@@ -6,7 +6,7 @@ export const level1 = {
     { count: 2, type: 'ghost' },
     { count: 2, type: 'ghost' },
     { count: 3, type: 'ghost' },
-    { count: 3, type: 'ghost' },
+    { count: 4, type: 'ghost' },
     { count: 3, type: 'ghost' },
     { count: 4, type: 'ghost' },
     { count: 5, type: 'ghost' },

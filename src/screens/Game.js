@@ -41,7 +41,7 @@ export function loadLevel(levelIndex, levels) {
   state.cards = levels[levelIndex].availableCards.map(type => {
     const base = allCards[type];
     const card = { ...base, x: 20, y: cardY, timer: 0 };
-    cardY += 110;
+    cardY += 100;
     return card;
   });
 }
@@ -150,7 +150,7 @@ export function update(levels) {
         x: Math.random() * (canvas.width - 300) + 200,
         y: Math.random() * (canvas.height - 250) + 100,
         width: 110,
-        height: 130,
+        height: 80 ,
         bobTimer: 0,
       };
     } else if (state.currentLevel === 1 && !state.droppedCiulCard) {
@@ -159,7 +159,7 @@ export function update(levels) {
         x: Math.random() * (canvas.width - 300) + 200,
         y: Math.random() * (canvas.height - 250) + 100,
         width: 110,
-        height: 130,
+        height: 80,
         bobTimer: 0,
       };
     } else if (state.currentLevel >= 2) {
@@ -271,10 +271,10 @@ function drawMoney() {
 function drawWaveProgress() {
   if (state.waveTimer < state.waveDelay) return;
 
-  const barWidth = 160;
+  const barWidth = 180;
   const barX = canvas.width - 130 - barWidth - 100;
   const barY = 32;
-  const barHeight = 6;
+  const barHeight = 16;
 
   const totalWaves = state.spawnQueue.length;
   const currentProgressTicks = state.currentWave * state.spawnInterval + (state.currentWave < totalWaves ? state.spawnTimer : 0);
@@ -294,7 +294,7 @@ function drawWaveProgress() {
   const ghostY = barY + barHeight / 2;
 
   if (waveGhostImage.complete && waveGhostImage.naturalWidth !== 0) {
-    ctx.drawImage(waveGhostImage, 0, 0, 32, 32, ghostX - 6, ghostY - 6, 12, 12);
+    ctx.drawImage(waveGhostImage, 0, 0, 32, 32, ghostX - 13, ghostY - 13, 26, 26);
   }
 }
 
@@ -306,13 +306,16 @@ function drawDroppedCards() {
 
     ctx.fillStyle = '#1a1a2e';
     ctx.fillRect(c.x, bobY, c.width, c.height);
-    ctx.strokeStyle = '#534ab7';
+
+    ctx.strokeStyle = '#ffd700'; 
     ctx.lineWidth = 2;
     ctx.strokeRect(c.x, bobY, c.width, c.height);
 
     const scale = 0.6;
-    const spriteX = c.x + c.width / 2 - (96 * scale) / 2;
-    cardSprites[spriteKey]?.draw(ctx, spriteX, bobY + 10, scale);
+    const drawSize = 96 * scale;
+    const spriteX = c.x + c.width / 2 - drawSize / 2;
+    const spriteY = bobY + 10;
+    cardSprites[spriteKey]?.draw(ctx, spriteX, spriteY, scale);
 
     ctx.fillStyle = '#fbf3f3';
     ctx.font = '12px monospace';

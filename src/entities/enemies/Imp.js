@@ -6,7 +6,7 @@ export class Imp {
         this.y = y;
         this.gridX = gridX;
         this.scale = 1.5;
-        this.speed = 1;
+        this.speed = 1.2;
         this.hp = 100;
         this.isDead = false;
         this.damage = 10;

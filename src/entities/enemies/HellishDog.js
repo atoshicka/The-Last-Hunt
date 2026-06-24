@@ -7,7 +7,7 @@ export class HellishDog {
         this.gridX = gridX;
         this.scale = 2;
         this.speed = 0.5;
-        this.hp = 200;
+        this.hp = 220;
         this.maxHp = 220;
         this.isDead = false;
         this.damage = 20;
