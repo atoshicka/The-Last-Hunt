@@ -13,12 +13,16 @@ import { canvas, ctx } from './core/canvas.js';
 const levels = [level1, level2, level3];
 
 initMainMenu({
-  onPlay: () => startLevel(0),
+  onPlay: (index) => startLevel(index),
   onLevels: () => showLevelSelect(levels),
+  onReset: () => {
+    localStorage.removeItem('game_progress');
+    showMainMenu(levels);
+  }
 });
 
 initLevelSelect({
-  onBack: () => showMainMenu(),
+  onBack: () => showMainMenu(levels),
   onSelect: (index) => startLevel(index),
   onContinue: () => {
     document.getElementById('level-select').classList.add('hidden');
@@ -65,4 +69,4 @@ function gameLoop() {
   requestAnimationFrame(gameLoop);
 }
 
-showMainMenu();
+showMainMenu(levels);
