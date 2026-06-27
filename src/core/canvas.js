@@ -16,3 +16,20 @@ export function getCellCenter(col, row) {
     y: GRID_Y + row * CELL_SIZE + CELL_SIZE / 2,
   };
 }
+
+export function scaleCanvas() {
+  const scaleX = window.innerWidth / canvas.width;
+  const scaleY = window.innerHeight / canvas.height;
+  const scale = Math.min(scaleX, scaleY);
+
+  if (scale < 1) {
+    canvas.style.width = canvas.width * scale + 'px';
+    canvas.style.height = canvas.height * scale + 'px';
+  } else {
+    canvas.style.width = canvas.width + 'px';
+    canvas.style.height = canvas.height + 'px';
+  }
+}
+
+window.addEventListener('resize', scaleCanvas);
+scaleCanvas();

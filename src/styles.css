@@ -189,14 +189,22 @@ body {
 
 #game-screen {
   position: relative;
+  display: flex;
   align-items: center;
   justify-content: center;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
 }
 
 canvas {
   image-rendering: pixelated;
   image-rendering: crisp-edges;
   display: block;
+  max-width: 100vw;
+  max-height: 100vh;
+  width: auto;
+  height: auto;
 }
 
 .btn-ingame, .btn-codex-open {
