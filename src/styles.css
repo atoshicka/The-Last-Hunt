@@ -463,3 +463,114 @@ canvas {
   background-color: #534ab7;
   color: #f3f3f3;
 }
+
+@media (max-width: 768px) {
+  .menu-title {
+    font-size: 32px;
+    padding-bottom: 16px;
+  }
+
+  .menu-buttons {
+    width: 200px;
+    gap: 16px;
+  }
+
+  .menu-btn {
+    font-size: 13px;
+    padding: 10px 0;
+  }
+
+  .level-cards {
+    gap: 14px;
+    max-width: 340px;
+  }
+
+  .level-card {
+    width: 120px;
+    height: 160px;
+  }
+
+  .level-card .level-number {
+    font-size: 32px;
+  }
+
+  .level-card .level-name {
+    font-size: 11px;
+  }
+
+  .menu-btn-back {
+    font-size: 12px;
+  }
+
+  .codex-book {
+    width: 300px;
+    height: 460px;
+    padding: 28px 24px 20px;
+  }
+
+  .codex-sprite-wrap {
+    width: 150px;
+    height: 150px;
+    margin-bottom: 12px;
+  }
+
+  .codex-name {
+    font-size: 18px;
+  }
+
+  .codex-role {
+    font-size: 10px;
+    margin-bottom: 10px;
+  }
+
+  .codex-desc {
+    font-size: 12px;
+    height: 60px;
+    max-width: 240px;
+  }
+
+  .codex-nav {
+    gap: 24px;
+    margin-top: 10px;
+  }
+
+  .codex-arrow {
+    padding: 6px 14px;
+    font-size: 13px;
+  }
+
+  .codex-counter {
+    font-size: 10px;
+  }
+
+  .overlay-content h1 {
+    font-size: 28px;
+  }
+
+  .overlay-buttons {
+    width: 200px;
+  }
+
+  #overlay-btn {
+    font-size: 13px;
+    padding: 10px 0;
+  }
+
+  #overlay-levels-btn {
+    font-size: 12px;
+    padding: 8px 0;
+  }
+
+  .reset-modal {
+    padding: 28px 24px;
+    max-width: 280px;
+  }
+
+  .reset-text {
+    font-size: 15px;
+  }
+
+  .reset-sub {
+    font-size: 12px;
+  }
+}
