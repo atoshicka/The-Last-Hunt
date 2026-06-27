@@ -8,7 +8,7 @@ import { initOverlay, showOverlay } from './screens/Overlay.js';
 import { initGame, showGame, loadLevel, update, draw } from './screens/Game.js';
 import { initDragDrop } from './input/dragDrop.js';
 import { initCodex, initCodexControls } from './screens/Codex.js';
-import { canvas, ctx } from './core/canvas.js';
+import { canvas, ctx, scaleCanvas } from './core/canvas.js';
 
 const levels = [level1, level2, level3];
 
@@ -70,3 +70,4 @@ function gameLoop() {
 }
 
 showMainMenu(levels);
+scaleCanvas();
