@@ -13,12 +13,12 @@ export class Lans {
         this.isDead = false;
 
         this.idleSprite = new Sprite({
-            src: 'assets/hunters/lans-idle.png',
+            src: 'src/assets/hunters/lans-idle.png',
             frameWidth: 96, frameHeight: 96, frames: 1, speed: 1,
         });
 
         this.attackSprite = new Sprite({
-            src: 'assets/hunters/lans-attack.png',
+            src: 'src/assets/hunters/lans-attack.png',
             frameWidth: 96, frameHeight: 96, frames: 1, speed: 1,
         });
     }

@@ -10,7 +10,7 @@ export class Currency {
     this.collected = false;
 
     this.sprite = new Sprite({
-      src: 'assets/others/light.png',
+      src: 'src/assets/others/light.png',
       frameWidth: 32, frameHeight: 32, frames: 1, speed: 1,
     });
   }

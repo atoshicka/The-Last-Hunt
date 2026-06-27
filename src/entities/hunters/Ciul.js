@@ -13,12 +13,12 @@ export class Ciul {
         this.isDead = false;
 
         this.idleSprite = new Sprite({
-            src: 'assets/hunters/ciul-idle.png',
+            src: 'src/assets/hunters/ciul-idle.png',
             frameWidth: 96, frameHeight: 96, frames: 1, speed: 1,
         });
 
         this.attackSprite = new Sprite({
-            src: 'assets/hunters/ciul-attack.png',
+            src: 'src/assets/hunters/ciul-attack.png',
             frameWidth: 96, frameHeight: 96, frames: 1, speed: 1,
         });
     }

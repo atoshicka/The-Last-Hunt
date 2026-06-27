@@ -14,7 +14,7 @@ export class Salt {
         this.state = 'full';
 
         this.sprite = new Sprite({
-            src: './assets/others/full-salt.png',
+            src: 'src/assets/others/full-salt.png',
             frameWidth: 64,
             frameHeight: 64,
             frames: 1,
@@ -38,7 +38,7 @@ export class Salt {
             this.state = 'onTheEdge';
 
             this.sprite = new Sprite({
-                src: './assets/others/almost-eaten-salt.png', 
+                src: 'src/assets/others/almost-eaten-salt.png', 
                 frameWidth: 64,
                 frameHeight: 64,
                 frames: 1,
@@ -49,7 +49,7 @@ export class Salt {
             this.state = 'damage';
 
             this.sprite = new Sprite({
-                src: './assets/others/slightly-eaten-salt.png',
+                src: 'src/assets/others/slightly-eaten-salt.png',
                 frameWidth: 64,
                 frameHeight: 64,
                 frames: 1,
