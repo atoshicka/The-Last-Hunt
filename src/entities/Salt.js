@@ -1,4 +1,4 @@
-import { Sprite } from "./sprite.js";
+import { Sprite } from "./Sprite.js";
 
 export class Salt {
     constructor(x, y) {
