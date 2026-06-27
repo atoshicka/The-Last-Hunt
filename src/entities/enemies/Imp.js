@@ -17,7 +17,7 @@ export class Imp {
         this.row = null;
 
         this.sprite = new Sprite({
-            src: 'assets/enemies/imp.png',
+            src: 'src/assets/enemies/imp.png',
             frameWidth: 64,
             frameHeight: 64,
             frames: 2,

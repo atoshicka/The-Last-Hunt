@@ -9,9 +9,9 @@ export const allCards = {
 };
 
 export const cardSprites = {
-  comissar: new Sprite({ src: 'assets/hunters/comissar-idle.png', frameWidth: 96, frameHeight: 96, frames: 1, speed: 1 }),
-  angel: new Sprite({ src: 'assets/hunters/angel.png', frameWidth: 96, frameHeight: 96, frames: 1, speed: 1 }),
-  salt: new Sprite({ src: 'assets/others/full-salt.png', frameWidth: 96, frameHeight: 96, frames: 1, speed: 1 }),
-  lans: new Sprite({ src: 'assets/hunters/lans-idle.png', frameWidth: 96, frameHeight: 96, frames: 1, speed: 1 }),
-  ciul: new Sprite({ src: 'assets/hunters/ciul-idle.png', frameWidth: 96, frameHeight: 96, frames: 1, speed: 1 }),
+  comissar: new Sprite({ src: 'src/assets/hunters/comissar-idle.png', frameWidth: 96, frameHeight: 96, frames: 1, speed: 1 }),
+  angel: new Sprite({ src: 'src/assets/hunters/angel.png', frameWidth: 96, frameHeight: 96, frames: 1, speed: 1 }),
+  salt: new Sprite({ src: 'src/assets/others/full-salt.png', frameWidth: 96, frameHeight: 96, frames: 1, speed: 1 }),
+  lans: new Sprite({ src: 'src/assets/hunters/lans-idle.png', frameWidth: 96, frameHeight: 96, frames: 1, speed: 1 }),
+  ciul: new Sprite({ src: 'src/assets/hunters/ciul-idle.png', frameWidth: 96, frameHeight: 96, frames: 1, speed: 1 }),
 };

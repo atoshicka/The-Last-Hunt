@@ -18,7 +18,7 @@ export class HellishDog {
         this.isEnraged = false;
 
         this.normalSprite = new Sprite({
-            src: 'assets/enemies/hellish-dog.png',
+            src: 'src/assets/enemies/hellish-dog.png',
             frameWidth: 64,
             frameHeight: 64,
             frames: 2,
@@ -26,7 +26,7 @@ export class HellishDog {
         });
 
         this.enragedSprite = new Sprite({
-            src: 'assets/enemies/hellish-dog-enraged.png',
+            src: 'src/assets/enemies/hellish-dog-enraged.png',
             frameWidth: 64,
             frameHeight: 64,
             frames: 2,

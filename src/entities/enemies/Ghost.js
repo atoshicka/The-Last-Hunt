@@ -17,7 +17,7 @@ export class Ghost {
     this.row = null;
 
     this.sprite = new Sprite({
-      src: 'assets/enemies/ghost.png',
+      src: 'src/assets/enemies/ghost.png',
       frameWidth: 32, 
       frameHeight: 32, 
       frames: 2, 

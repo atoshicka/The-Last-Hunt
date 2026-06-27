@@ -13,12 +13,12 @@ export class Comissar {
         this.isDead = false;
 
         this.idleSprite = new Sprite({
-            src: 'assets/hunters/comissar-idle.png',
+            src: 'src/assets/hunters/comissar-idle.png',
             frameWidth: 96, frameHeight: 96, frames: 1, speed: 1,
         });
 
         this.attackSprite = new Sprite({
-            src: 'assets/hunters/comissar-atack.png',
+            src: 'src/assets/hunters/comissar-atack.png',
             frameWidth: 96, frameHeight: 96, frames: 1, speed: 1,
         });
     }

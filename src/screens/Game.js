@@ -11,7 +11,7 @@ import { Currency } from '../entities/Currency.js';
 import { showOverlay } from './Overlay.js';
 
 const waveGhostImage = new Image();
-waveGhostImage.src = 'assets/enemies/ghost.png';
+waveGhostImage.src = 'src/assets/enemies/ghost.png';
 
 let levelsCount = 0;
 

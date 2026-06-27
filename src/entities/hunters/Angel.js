@@ -11,7 +11,7 @@ export class Angel {
     this.isDead = false;
 
     this.sprite = new Sprite({
-      src: 'assets/hunters/angel.png',
+      src: 'src/assets/hunters/angel.png',
       frameWidth: 96, frameHeight: 96, frames: 1, speed: 15,
     });
   }
