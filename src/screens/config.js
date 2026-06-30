@@ -6,6 +6,7 @@ export const allCards = {
   salt: { type: 'salt', label: 'salt', width: 110, height: 80, cooldown: 10, cost: 50  },
   lans: { type: 'lans', label: 'lans', width: 110, height: 80, cooldown: 10, cost: 200 },
   ciul: {type: 'ciul', label: 'ciul', width: 110, height: 80, cooldown: 8, cost: 100},
+  kain: { type: 'kain', label: 'kain', width: 110, height: 80, cooldown: 16, cost: 50 },
 };
 
 export const cardSprites = {
@@ -14,4 +15,5 @@ export const cardSprites = {
   salt: new Sprite({ src: 'src/assets/others/full-salt.png', frameWidth: 96, frameHeight: 96, frames: 1, speed: 1 }),
   lans: new Sprite({ src: 'src/assets/hunters/lans-idle.png', frameWidth: 96, frameHeight: 96, frames: 1, speed: 1 }),
   ciul: new Sprite({ src: 'src/assets/hunters/ciul-idle.png', frameWidth: 96, frameHeight: 96, frames: 1, speed: 1 }),
+  kain: new Sprite({ src: 'src/assets/hunters/kain-idle.png', frameWidth: 96, frameHeight: 96, frames: 1, speed: 1 }),
 };

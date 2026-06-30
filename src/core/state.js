@@ -8,6 +8,8 @@ export const state = {
   bullets: [],
   crossOfExile: [],
   piercingShot: [],
+  bladeWave: [],
+  darkProjectiles: [],
   playerMoney: 50,
   spawnQueue: [],
   spawnTimer: 0,
@@ -28,6 +30,8 @@ export function resetState(level) {
   state.bullets = [];
   state.crossOfExile = [];
   state.piercingShot = [];
+  state.bladeWave = [];
+  state.darkProjectiles = [];
   state.droppedLansCard = null;
   state.playerMoney = level.startMoney;
   state.spawnQueue = level.spawnQueue;

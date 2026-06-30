@@ -2,6 +2,7 @@ import { state } from './core/state.js';
 import { level1 } from './levels/level1.js';
 import { level2 } from './levels/level2.js';
 import { level3 } from './levels/level3.js';
+import { level4 } from './levels/level4.js';
 import { initMainMenu, showMainMenu } from './screens/MainMenu.js';
 import { initLevelSelect, showLevelSelect } from './screens/LevelSelect.js';
 import { initOverlay, showOverlay } from './screens/Overlay.js';
@@ -10,7 +11,7 @@ import { initDragDrop } from './input/dragDrop.js';
 import { initCodex, initCodexControls } from './screens/Codex.js';
 import { canvas, ctx, scaleCanvas } from './core/canvas.js';
 
-const levels = [level1, level2, level3];
+const levels = [level1, level2, level3, level4];
 
 initMainMenu({
   onPlay: (index) => startLevel(index),
