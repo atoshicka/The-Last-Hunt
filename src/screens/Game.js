@@ -4,11 +4,13 @@ import { allCards, cardSprites } from './config.js';
 import { Ghost } from '../entities/enemies/Ghost.js';
 import { HellishDog } from '../entities/enemies/HellishDog.js';
 import { Imp } from '../entities/enemies/Imp.js';
+import { Death } from '../entities/enemies/Death.js';
 import { Bullet } from '../entities/projectiles/Bullet.js';
 import { CrossOfExile } from '../entities/projectiles/CrossOfExile.js';
 import { PiercingShot } from '../entities/projectiles/PiercingShot.js';
 import { Currency } from '../entities/Currency.js';
 import { showOverlay } from './Overlay.js';
+import { BladeWave } from '../entities/projectiles/BladeWave.js';
 
 const waveGhostImage = new Image();
 waveGhostImage.src = 'src/assets/enemies/ghost.png';
@@ -78,9 +80,15 @@ export function update(levels) {
           const pos = getCellCenter(9, row);
 
           let enemy;
-          if (entry.type === 'dog') enemy = new HellishDog(pos.x, pos.y, GRID_X);
-          else if (entry.type === 'imp') enemy = new Imp(pos.x, pos.y, GRID_X);
-          else enemy = new Ghost(pos.x, pos.y, GRID_X);
+          if (entry.type === 'dog') {
+            enemy = new HellishDog(pos.x, pos.y, GRID_X);
+          } else if (entry.type === 'imp') {
+            enemy = new Imp(pos.x, pos.y, GRID_X);
+          } else if (entry.type === 'death') {
+            enemy = new Death(pos.x, pos.y, GRID_X); // Теперь Смерть спавнится корректно
+          } else {
+            enemy = new Ghost(pos.x, pos.y, GRID_X);
+          }
 
           enemy.row = row;
           state.enemies.push(enemy);
@@ -101,6 +109,7 @@ export function update(levels) {
     if (result?.shoot) state.bullets.push(new Bullet(result.x, result.y));
     if (result?.flame) state.crossOfExile.push(new CrossOfExile(result.x, result.y));
     if (result?.piercingShot) state.piercingShot.push(new PiercingShot(result.x, result.y));
+    if (result?.bladeWave) state.bladeWave.push(new BladeWave(result.x, result.y, result.target));
 
     if (h.constructor.name === 'Angel') {
       h.dropTimer = (h.dropTimer || 0) + 1;
@@ -128,13 +137,29 @@ export function update(levels) {
     if (state.piercingShot[i].dead) state.piercingShot.splice(i, 1);
   }
 
+  for (let i = state.bladeWave.length - 1; i >= 0; i--) {
+    state.bladeWave[i].update();
+    if (state.bladeWave[i].dead) state.bladeWave.splice(i, 1); 
+  }
+
+  // Обновление врагов (с проверкой на босса Death)
   state.enemies.forEach(e => {
-    e.update(state.hunters);
+    if (e.constructor.name === 'Death') {
+      e.update(state.hunters, state.darkProjectiles);
+    } else {
+      e.update(state.hunters);
+    }
     if (e.reachedEnd) {
       state.gameState = 'gameover';
       showOverlay('gameover', state.currentLevel, levels.length);
     }
   });
+
+  // Обновление и очистка темных снарядов
+  for (let i = state.darkProjectiles.length - 1; i >= 0; i--) {
+    state.darkProjectiles[i].update();
+    if (state.darkProjectiles[i].dead) state.darkProjectiles.splice(i, 1);
+  }
 
   for (let i = state.hunters.length - 1; i >= 0; i--) {
     if (state.hunters[i].isDead) state.hunters.splice(i, 1);
@@ -150,7 +175,7 @@ export function update(levels) {
         x: Math.random() * (canvas.width - 300) + 200,
         y: Math.random() * (canvas.height - 250) + 100,
         width: 110,
-        height: 80 ,
+        height: 80,
         bobTimer: 0,
       };
     } else if (state.currentLevel === 1 && !state.droppedCiulCard) {
@@ -162,7 +187,16 @@ export function update(levels) {
         height: 80,
         bobTimer: 0,
       };
-    } else if (state.currentLevel >= 2) {
+    } else if (state.currentLevel === 2 && !state.droppedKainCard) {
+      state.gameState = 'cardDrop';
+      state.droppedKainCard = {
+        x: Math.random() * (canvas.width - 300) + 200,
+        y: Math.random() * (canvas.height - 250) + 100,
+        width: 110,
+        height: 80,
+        bobTimer: 0,
+      };
+    } else if (state.currentLevel >= 3) {
       state.gameState = 'win';
       showOverlay('win', state.currentLevel, levels.length);
     }
@@ -184,6 +218,10 @@ export function draw() {
   state.bullets.forEach(b => b.draw(ctx));
   state.crossOfExile.forEach(f => f.draw(ctx));
   state.piercingShot.forEach(p => p.draw(ctx));
+  state.bladeWave.forEach(b => b.draw(ctx));
+  
+  // Отрисовка темных снарядов врагов
+  state.darkProjectiles.forEach(p => p.draw(ctx));
 
   drawCards();
 
@@ -325,4 +363,5 @@ function drawDroppedCards() {
 
   drawCard(state.droppedLansCard, 'lans', 'lans');
   drawCard(state.droppedCiulCard, 'ciul', 'ciul');
+  drawCard(state.droppedKainCard, 'kain', 'kain');
 }

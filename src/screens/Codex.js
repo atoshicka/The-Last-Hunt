@@ -72,6 +72,24 @@ const entries = [
         spriteSize: 64,
         scale: 2.5,
     },
+
+    {
+        name: 'Kain',
+        role: 'Hunters',
+        description: 'Охотник, способный противостоять одному монстру своим клинком, пожертвовав собой.',
+        sprite: new Sprite({ src: 'src/assets/hunters/kain-idle.png', frameWidth: 96, frameHeight: 96, frames: 1, speed: 1 }),
+        spriteSize: 92,
+        scale: 2.5,
+    },
+
+    {
+        name: 'Death',
+        role: 'Enemies',
+        description: 'Смерть, пришедшая по души охотников.',
+        sprite: new Sprite({ src: 'src/assets/enemies/death-idle.png', frameWidth: 96, frameHeight: 96, frames: 1, speed: 1 }),
+        spriteSize: 92,
+        scale: 1,
+    },
 ];
 
 let currentIndex = 0;
