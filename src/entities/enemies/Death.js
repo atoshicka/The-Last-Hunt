@@ -8,11 +8,11 @@ export class Death {
     this.gridX = gridX;
     this.scale = 1; 
     this.speed = 0.5;
-    this.hp = 666;
+    this.hp = 500;
     this.isDead = false;
-    this.damage = 80;
+    this.damage = 50;
     this.attackTimer = 0;
-    this.attackSpeed = 90;
+    this.attackSpeed = 100;
     this.target = null;
     this.reachedEnd = false;
     this.row = null;

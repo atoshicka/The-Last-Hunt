@@ -70,20 +70,35 @@ body {
   background: #534ab7;
   color: #f3f3f3;
   border: 2px solid #7a70dd;
-}
-.menu-btn.primary:hover {
+
+  &:hover {
   background: #6a5fd4;
   border-color: #9990ee;
+  }
+}
+
+.menu-btn.primary:disabled {
+  background: #2a2a44;
+  border-color: #333355;
+  color: #55556a;
+  cursor: not-allowed;
+}
+
+.menu-btn.primary:disabled:hover {
+  background: #2a2a44;
+  border-color: #333355;
+  color: #55556a;
 }
 
 .menu-btn.secondary {
   background: transparent;
   color: #8888aa;
   border: 1px solid #2a2a44;
-}
-.menu-btn.secondary:hover {
+
+  &:hover {
   color: #f3f3f3;
   border-color: #534ab7;
+  }
 }
 
 .menu-btn-back {
@@ -96,9 +111,10 @@ body {
   cursor: pointer;
   margin-top: 8px;
   transition: color 0.15s;
-}
-.menu-btn-back:hover {
+
+  &:hover {
   color: #f3f3f3;
+  }
 }
 
 .level-cards {
@@ -156,21 +172,32 @@ body {
 
 .level-card.completed {
   border-left: 4px solid #534ab7;
-}
-.level-card.completed .level-number { color: #f3f3f3; }
-.level-card.completed .level-status { color: #534ab7; }
 
-.level-card.completed:hover {
+  &:hover {
   border-color: #534ab7;
   background: #131326;
   transform: translateY(-3px);
+  }
+}
+
+.level-card.completed .level-number { 
+  color: #f3f3f3; 
+}
+
+.level-card.completed .level-status { 
+  color: #534ab7; 
 }
 
 .level-card:not(.locked):not(.completed) {
   border-left: 4px solid #ffd700;
 }
-.level-card:not(.locked):not(.completed) .level-number { color: #ffd700; }
-.level-card:not(.locked):not(.completed) .level-status { color: #ffd700; }
+.level-card:not(.locked):not(.completed) .level-number { 
+  color: #ffd700; 
+}
+
+.level-card:not(.locked):not(.completed) .level-status { 
+  color: #ffd700; 
+}
 
 .level-card:not(.locked):not(.completed):hover {
   border-color: #ffd700;
@@ -184,8 +211,105 @@ body {
   opacity: 0.5;
   background: #0a0a14;
 }
-.level-card.locked .level-number { color: #444455; }
-.level-card.locked .level-status.error { color: #ff4444; }
+.level-card.locked .level-number { 
+  color: #444455; 
+}
+
+.level-card.locked .level-status.error { 
+  color: #ff4444; 
+}
+
+.squad-subtitle {
+  font-size: 13px;
+  color: #8888aa;
+  letter-spacing: 1px;
+  margin-top: -6px;
+}
+
+.squad-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 16px;
+  width: 100%;
+  max-width: 760px;
+  margin: 20px 0;
+  padding: 0 20px;
+}
+
+.squad-card {
+  position: relative;
+  background: #0f0f1e;
+  border: 1px solid #2a2a44;
+  border-radius: 4px;
+  padding: 14px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.squad-card:hover {
+  border-color: #534ab7;
+  background: #131326;
+  transform: translateY(-3px);
+}
+
+.squad-card-sprite {
+  width: 72px;
+  height: 72px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #05050a;
+  border: 1px solid #2a2a44;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.squad-card-sprite canvas {
+  image-rendering: pixelated;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.squad-card-label {
+  font-size: 12px;
+  color: #f3f3f3;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.squad-card.selected {
+  border-color: #ffd700;
+  background: #131326;
+}
+
+.squad-card.selected .squad-card-sprite {
+  border-color: #ffd700;
+}
+
+.squad-card.selected::after {
+  content: '✓';
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  color: #ffd700;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.squad-card.disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.squad-card.disabled:hover {
+  border-color: #2a2a44;
+  background: #0f0f1e;
+  transform: none;
+}
 
 #game-screen {
   position: relative;
@@ -223,10 +347,11 @@ canvas {
   font-size: 12px;
   padding: 6px 12px;
   color: #8888aa;
-}
-.btn-ingame:hover {
+
+  &:hover {
   color: #f3f3f3;
   border-color: #534ab7;
+  }
 }
 
 .btn-codex-open {
@@ -234,9 +359,10 @@ canvas {
   font-size: 18px;
   color: #f3f3f3;
   padding: 6px 10px;
-}
-.btn-codex-open:hover {
+
+  &:hover {
   border-color: #534ab7;
+  }
 }
 
 .overlay, #reset-confirm, .codex-overlay {
@@ -252,8 +378,13 @@ canvas {
   z-index: 20;
 }
 
-#reset-confirm { z-index: 40; }
-.codex-overlay { z-index: 30; }
+#reset-confirm { 
+  z-index: 40; 
+}
+
+.codex-overlay { 
+  z-index: 30; 
+}
 
 .overlay-content {
   text-align: center;
@@ -286,9 +417,10 @@ canvas {
   transition: background 0.15s;
   margin-bottom: 20px;
   margin-top: 20px;
-}
-#overlay-btn:hover {
+
+  &:hover {
   background: #6a5fd4;
+  }
 }
 
 #overlay-levels-btn {
@@ -301,10 +433,11 @@ canvas {
   border: 1px solid #2a2a44;
   cursor: pointer;
   transition: all 0.15s;
-}
-#overlay-levels-btn:hover {
+
+  &:hover {
   color: #f3f3f3;
   border-color: #534ab7;
+  }
 }
 
 .reset-modal {
@@ -376,8 +509,16 @@ canvas {
   background: #131326;
   border-radius: 2px;
 }
-.codex-role.hunter { color: #8888aa; border-left: 2px solid #534ab7; }
-.codex-role.enemy { color: #8888aa; border-left: 2px solid #ff4444; }
+
+.codex-role.hunter { 
+  color: #8888aa; 
+  border-left: 2px solid #534ab7; 
+}
+
+.codex-role.enemy { 
+  color: #8888aa; 
+  border-left: 2px solid #ff4444; 
+}
 
 .codex-sprite-wrap {
   grid-column: 1;
@@ -440,12 +581,14 @@ canvas {
   font-family: monospace;
   border-radius: 2px;
   transition: all 0.2s;
-}
-.codex-arrow:hover {
+
+  &:hover {
   background: #534ab7;
   border-color: #7a70dd;
   color: #fff;
+  }
 }
+
 
 .codex-counter {
   grid-column: 1 / -1;
@@ -462,4 +605,19 @@ canvas {
 #btn-continue {
   background-color: #534ab7;
   color: #f3f3f3;
+}
+
+#shovel {
+  width: 64px;
+  height: 64px;
+  cursor: grab;
+}
+
+.shovel-container {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 50;
+  background-color: #1a1a2e;
+  border: 3px solid #534ab7;
 }

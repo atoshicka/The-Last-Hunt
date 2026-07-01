@@ -7,14 +7,19 @@ import { initMainMenu, showMainMenu } from './screens/MainMenu.js';
 import { initLevelSelect, showLevelSelect } from './screens/LevelSelect.js';
 import { initOverlay, showOverlay } from './screens/Overlay.js';
 import { initGame, showGame, loadLevel, update, draw } from './screens/Game.js';
+import { initSquadSelect, showSquadSelect } from './screens/SquadSelect.js';
 import { initDragDrop } from './input/dragDrop.js';
 import { initCodex, initCodexControls } from './screens/Codex.js';
 import { canvas, ctx, scaleCanvas } from './core/canvas.js';
 
 const levels = [level1, level2, level3, level4];
 
+const SQUAD_SELECT_MIN_LEVEL_INDEX = 3;
+
+let pendingLevelIndex = 0;
+
 initMainMenu({
-  onPlay: (index) => startLevel(index),
+  onPlay: (index) => requestStartLevel(index),
   onLevels: () => showLevelSelect(levels),
   onReset: () => {
     localStorage.removeItem('game_progress');
@@ -24,7 +29,7 @@ initMainMenu({
 
 initLevelSelect({
   onBack: () => showMainMenu(levels),
-  onSelect: (index) => startLevel(index),
+  onSelect: (index) => requestStartLevel(index),
   onContinue: () => {
     document.getElementById('level-select').classList.add('hidden');
     document.getElementById('game-screen').classList.remove('hidden');
@@ -35,11 +40,11 @@ initOverlay({
   onNext: () => {
     document.getElementById('overlay').classList.add('hidden');
     if (state.gameState === 'win' && state.currentLevel < levels.length - 1) {
-      startLevel(state.currentLevel + 1);
+      requestStartLevel(state.currentLevel + 1);
     } else if (state.gameState === 'gameover') {
-      startLevel(state.currentLevel);
+      requestStartLevel(state.currentLevel);
     } else {
-      startLevel(0);
+      requestStartLevel(0);
     }
   },
   onLevels: () => showLevelSelect(levels),
@@ -50,13 +55,27 @@ initDragDrop();
 initCodex(canvas, ctx);
 initCodexControls();
 
+initSquadSelect({
+  onStart: (selectedSquad) => startLevel(pendingLevelIndex, selectedSquad),
+  onLevels: () => showLevelSelect(levels),
+});
+
 document.getElementById('gameCanvas').addEventListener('gameWin', () => {
   state.gameState = 'win';
   showOverlay('win', state.currentLevel, levels.length);
 });
 
-function startLevel(index) {
-  loadLevel(index, levels);
+function requestStartLevel(index) {
+  if (index >= SQUAD_SELECT_MIN_LEVEL_INDEX) {
+    pendingLevelIndex = index;
+    showSquadSelect();
+    return;
+  }
+  startLevel(index);
+}
+
+function startLevel(index, selectedSquad) {
+  loadLevel(index, levels, selectedSquad);
   showGame();
   if (!state.gameLoopStarted) {
     state.gameLoopStarted = true;

@@ -21,11 +21,13 @@ export function showGame() {
   document.getElementById('main-menu').classList.add('hidden');
   document.getElementById('level-select').classList.add('hidden');
   document.getElementById('game-screen').classList.remove('hidden');
+  document.getElementById('shovel-container').classList.remove('hidden');
 }
 
 export function initGame(levels, onLevelsSelect) {
   levelsCount = levels.length;
   document.getElementById('btn-levels-ingame').addEventListener('click', () => {
+    document.getElementById('shovel-container').classList.add('hidden');
     if (onLevelsSelect) {
       onLevelsSelect();
     } else {
@@ -35,12 +37,16 @@ export function initGame(levels, onLevelsSelect) {
   });
 }
 
-export function loadLevel(levelIndex, levels) {
+export function loadLevel(levelIndex, levels, selectedSquad) {
   state.currentLevel = levelIndex;
   resetState(levels[levelIndex]);
 
+  const cardTypes = (selectedSquad && selectedSquad.length > 0)
+    ? selectedSquad
+    : levels[levelIndex].availableCards;
+
   let cardY = 60;
-  state.cards = levels[levelIndex].availableCards.map(type => {
+  state.cards = cardTypes.map(type => {
     const base = allCards[type];
     const card = { ...base, x: 20, y: cardY, timer: 0 };
     cardY += 100;
@@ -85,7 +91,7 @@ export function update(levels) {
           } else if (entry.type === 'imp') {
             enemy = new Imp(pos.x, pos.y, GRID_X);
           } else if (entry.type === 'death') {
-            enemy = new Death(pos.x, pos.y, GRID_X); // Теперь Смерть спавнится корректно
+            enemy = new Death(pos.x, pos.y, GRID_X); 
           } else {
             enemy = new Ghost(pos.x, pos.y, GRID_X);
           }
@@ -142,7 +148,6 @@ export function update(levels) {
     if (state.bladeWave[i].dead) state.bladeWave.splice(i, 1); 
   }
 
-  // Обновление врагов (с проверкой на босса Death)
   state.enemies.forEach(e => {
     if (e.constructor.name === 'Death') {
       e.update(state.hunters, state.darkProjectiles);
@@ -155,7 +160,6 @@ export function update(levels) {
     }
   });
 
-  // Обновление и очистка темных снарядов
   for (let i = state.darkProjectiles.length - 1; i >= 0; i--) {
     state.darkProjectiles[i].update();
     if (state.darkProjectiles[i].dead) state.darkProjectiles.splice(i, 1);
@@ -219,8 +223,6 @@ export function draw() {
   state.crossOfExile.forEach(f => f.draw(ctx));
   state.piercingShot.forEach(p => p.draw(ctx));
   state.bladeWave.forEach(b => b.draw(ctx));
-  
-  // Отрисовка темных снарядов врагов
   state.darkProjectiles.forEach(p => p.draw(ctx));
 
   drawCards();
@@ -305,6 +307,38 @@ function drawMoney() {
   ctx.textAlign = 'right';
   ctx.fillText(`${state.playerMoney}`, canvas.width - 20, 42);
 }
+
+const shovelImg = document.getElementById('shovel');
+if (shovelImg) {
+  shovelImg.addEventListener('dragstart', (e) => {
+    e.dataTransfer.setData('text/plain', 'shovel_action');
+  });
+}
+
+canvas.addEventListener('dragover', (e) => {
+  e.preventDefault();
+});
+
+canvas.addEventListener('drop', (e) => {
+  e.preventDefault();
+
+  const rect = canvas.getBoundingClientRect();
+
+  const scaleX = canvas.width / rect.width;
+  const scaleY = canvas.height / rect.height;
+
+  const mouseX = (e.clientX - rect.left) * scaleX;
+  const mouseY = (e.clientY - rect.top) * scaleY;
+  
+  const targetIndex = state.hunters.findIndex(h => {
+    return Math.abs(h.x - mouseX) < 48 && Math.abs(h.y - mouseY) < 48;
+  });
+
+  if (targetIndex !== -1) {
+    state.hunters[targetIndex].isDead = true;
+    state.hunters.splice(targetIndex, 1);
+  }
+});
 
 function drawWaveProgress() {
   if (state.waveTimer < state.waveDelay) return;
