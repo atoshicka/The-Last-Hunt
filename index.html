@@ -26,6 +26,16 @@
     </div>
   </div>
 
+  <div id="squad-select" class="screen hidden">
+    <h2 class="menu-title">Выбор отряда</h2>
+    <p class="squad-subtitle">Выберите 5 персонажей для этого уровня.</p>
+    <div id="squad-cards" class="squad-cards"></div>
+      <div class="level-select-buttons">
+        <button class="menu-btn secondary" id="btn-squad-levels">Выбор уровня</button>
+        <button class="menu-btn primary" id="btn-squad-start" disabled>Начать</button>
+      </div>
+  </div>
+
   <div id="game-screen" class="screen hidden">
     <button id="btn-levels-ingame" class="btn-ingame">☰</button>
     <canvas id="gameCanvas"></canvas>
@@ -51,6 +61,10 @@
         <button id="btn-codex-next" class="codex-arrow">▶</button>
       </div>
     </div>
+  </div>
+
+  <div class="shovel-container hidden" id="shovel-container">
+    <img src="src/assets/others/shovel.png" alt="shovel" id="shovel" draggable="true">
   </div>
 
   <script src="src/main.js" type="module"></script>
