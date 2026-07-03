@@ -129,10 +129,10 @@ body {
 
 .level-card {
   position: relative;
-  height: 110px;
   background: #0f0f1e;
   border: 1px solid #2a2a44;
   display: flex;
+  flex-direction: column;
   cursor: pointer;
   transition: all 0.2s ease;
 }
@@ -329,6 +329,7 @@ canvas {
   max-height: 100vh;
   width: auto;
   height: auto;
+  touch-action: none;
 }
 
 .btn-ingame, .btn-codex-open {

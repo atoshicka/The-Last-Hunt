@@ -1,4 +1,4 @@
-import { canvas, ctx, COLS, ROWS, CELL_SIZE, GRID_X, GRID_Y, getCellCenter } from '../core/canvas.js';
+import { canvas, ctx, COLS, ROWS, CELL_SIZE, GRID_X, GRID_Y, getCellCenter, getCanvasCoords } from '../core/canvas.js';
 import { state, resetState } from '../core/state.js';
 import { allCards, cardSprites } from './config.js';
 import { Ghost } from '../entities/enemies/Ghost.js';
@@ -322,13 +322,7 @@ canvas.addEventListener('dragover', (e) => {
 canvas.addEventListener('drop', (e) => {
   e.preventDefault();
 
-  const rect = canvas.getBoundingClientRect();
-
-  const scaleX = canvas.width / rect.width;
-  const scaleY = canvas.height / rect.height;
-
-  const mouseX = (e.clientX - rect.left) * scaleX;
-  const mouseY = (e.clientY - rect.top) * scaleY;
+  const { x: mouseX, y: mouseY } = getCanvasCoords(e.clientX, e.clientY);
   
   const targetIndex = state.hunters.findIndex(h => {
     return Math.abs(h.x - mouseX) < 48 && Math.abs(h.y - mouseY) < 48;

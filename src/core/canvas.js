@@ -17,6 +17,16 @@ export function getCellCenter(col, row) {
   };
 }
 
+export function getCanvasCoords(clientX, clientY) {
+  const rect = canvas.getBoundingClientRect();
+  const scaleX = canvas.width / rect.width;
+  const scaleY = canvas.height / rect.height;
+  return {
+    x: (clientX - rect.left) * scaleX,
+    y: (clientY - rect.top) * scaleY,
+  };
+}
+
 export function scaleCanvas() {
   const scaleX = window.innerWidth / canvas.width;
   const scaleY = window.innerHeight / canvas.height;
