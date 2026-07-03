@@ -1,4 +1,4 @@
-import { canvas, COLS, ROWS, CELL_SIZE, GRID_X, GRID_Y, getCellCenter } from '../core/canvas.js';
+import { canvas, COLS, ROWS, CELL_SIZE, GRID_X, GRID_Y, getCellCenter, getCanvasCoords } from '../core/canvas.js';
 import { state } from '../core/state.js';
 import { Comissar } from '../entities/hunters/Comissar.js';
 import { Angel } from '../entities/hunters/Angel.js';
@@ -41,14 +41,27 @@ function placeHunter(type, pos, col, row) {
 export function initDragDrop() {
   let dragging = null;
   let dragSprite = null;
+  let activePointerId = null;
+  canvas.style.touchAction = 'none';
 
-  canvas.addEventListener('mousedown', (e) => {
-    const rect = canvas.getBoundingClientRect();
-    const mx = e.clientX - rect.left;
-    const my = e.clientY - rect.top;
+  function resetDrag() {
+    if (activePointerId !== null && canvas.hasPointerCapture?.(activePointerId)) {
+      canvas.releasePointerCapture(activePointerId);
+    }
+    dragging = null;
+    dragSprite = null;
+    state.dragSprite = null;
+    activePointerId = null;
+  }
+
+  canvas.addEventListener('pointerdown', (e) => {
+    if (activePointerId !== null) return;
+    if (e.pointerType === 'touch') e.preventDefault();
+
+    const { x: mx, y: my } = getCanvasCoords(e.clientX, e.clientY);
 
     if (state.gameState === 'cardDrop') {
-      const clickedCard = [state.droppedLansCard, state.droppedCiulCard, state.droppedKainCard].find(c => 
+      const clickedCard = [state.droppedLansCard, state.droppedCiulCard, state.droppedKainCard].find(c =>
         c && mx >= c.x && mx <= c.x + c.width && my >= c.y && my <= c.y + c.height
       );
 
@@ -81,26 +94,25 @@ export function initDragDrop() {
         dragging = card.type;
         dragSprite = createDragSprite(card.type, mx, my);
         state.dragSprite = dragSprite;
+        activePointerId = e.pointerId;
+        canvas.setPointerCapture(e.pointerId);
       }
     });
   });
 
-  canvas.addEventListener('mousemove', (e) => {
-    const rect = canvas.getBoundingClientRect();
-    const dragX = e.clientX - rect.left;
-    const dragY = e.clientY - rect.top;
-    if (dragSprite) {
-      dragSprite.x = dragX;
-      dragSprite.y = dragY;
-    }
+  canvas.addEventListener('pointermove', (e) => {
+    if (!dragSprite || e.pointerId !== activePointerId) return;
+    if (e.pointerType === 'touch') e.preventDefault();
+
+    const { x: dragX, y: dragY } = getCanvasCoords(e.clientX, e.clientY);
+    dragSprite.x = dragX;
+    dragSprite.y = dragY;
   });
 
-  canvas.addEventListener('mouseup', (e) => {
-    if (!dragging) return;
+  canvas.addEventListener('pointerup', (e) => {
+    if (!dragging || e.pointerId !== activePointerId) return;
 
-    const rect = canvas.getBoundingClientRect();
-    const mx = e.clientX - rect.left;
-    const my = e.clientY - rect.top;
+    const { x: mx, y: my } = getCanvasCoords(e.clientX, e.clientY);
 
     const col = Math.floor((mx - GRID_X) / CELL_SIZE);
     const row = Math.floor((my - GRID_Y) / CELL_SIZE);
@@ -111,8 +123,16 @@ export function initDragDrop() {
       if (!cellTaken) placeHunter(dragging, pos, col, row);
     }
 
-    dragging = null;
-    dragSprite = null;
-    state.dragSprite = null;
+    resetDrag();
+  });
+
+  canvas.addEventListener('pointercancel', (e) => {
+    if (e.pointerId !== activePointerId) return;
+    resetDrag();
+  });
+
+  canvas.addEventListener('lostpointercapture', (e) => {
+    if (e.pointerId !== activePointerId) return;
+    resetDrag();
   });
 }
