@@ -38,6 +38,19 @@ function placeHunter(type, pos, col, row) {
   }
 }
 
+function removeHunterAt(clientX, clientY) {
+  const { x: mx, y: my } = getCanvasCoords(clientX, clientY);
+
+  const targetIndex = state.hunters.findIndex(h => {
+    return Math.abs(h.x - mx) < 48 && Math.abs(h. y - my) < 48;
+  });
+
+  if (targetIndex !== -1) {
+    state.hunters[targetIndex].isDead = true;
+    state.hunters.splice(targetIndex, 1);
+  }
+}
+
 export function initDragDrop() {
   let dragging = null;
   let dragSprite = null;
@@ -134,5 +147,87 @@ export function initDragDrop() {
   canvas.addEventListener('lostpointercapture', (e) => {
     if (e.pointerId !== activePointerId) return;
     resetDrag();
+  });
+
+  initShovelDragDrop();
+}
+
+function initShovelDragDrop() {
+  const shovelImg = document.getElementById('shovel');
+  if (!shovelImg) return;
+
+  shovelImg.setAttribute('draggable', 'false');
+  shovelImg.style.webkitUserDrag = 'none';
+  shovelImg.style.userSelect = 'none';
+  shovelImg.style.webkitUserSelect = 'none';
+  shovelImg.addEventListener('dragstart', (e) => e.preventDefault());
+
+  shovelImg.style.touchAction = 'none';
+
+  let shovelPointerId = null;
+  let shovelClone = null;
+
+  function startShovelClone(clientX, clientY) {
+    shovelClone = shovelImg.cloneNode(true);
+    shovelClone.removeAttribute('id');
+    shovelClone.setAttribute('draggable', 'false');
+    shovelClone.style.position = 'fixed';
+    shovelClone.style.pointerEvents = 'none';
+    shovelClone.style.opacity = '0.7';
+    shovelClone.style.zIndex = '60';
+    shovelClone.style.width = `${shovelImg.offsetWidth}px`;
+    shovelClone.style.height = `${shovelImg.offsetHeight}px`;
+    shovelClone.style.left = `${clientX - shovelImg.offsetWidth / 2}px`;
+    shovelClone.style.top = `${clientY - shovelImg.offsetHeight / 2}px`;
+    document.body.appendChild(shovelClone);
+  }
+
+  function moveShovelClone(clientX, clientY) {
+    if (!shovelClone) return;
+    shovelClone.style.left = `${clientX - shovelClone.offsetWidth / 2}px`;
+    shovelClone.style.top = `${clientY - shovelClone.offsetHeight / 2}px`;
+  }
+
+  function resetShovelDrag() {
+    if (shovelPointerId !== null && shovelImg.hasPointerCapture?.(shovelPointerId)) {
+      shovelImg.releasePointerCapture(shovelPointerId);
+    }
+    if (shovelClone) {
+      shovelClone.remove();
+      shovelClone = null;
+    }
+    shovelPointerId = null;
+  }
+
+  shovelImg.addEventListener('pointerdown', (e) => {
+    if (shovelPointerId !== null) return;
+    if (state.gameState !== 'playing') return;
+    e.preventDefault();
+
+    shovelPointerId = e.pointerId;
+    shovelImg.setPointerCapture(e.pointerId);
+    startShovelClone(e.clientX, e.clientY);
+  });
+
+  shovelImg.addEventListener('pointermove', (e) => {
+    if (e.pointerId !== shovelPointerId) return;
+    e.preventDefault();
+    moveShovelClone(e.clientX, e.clientY);
+  });
+
+  shovelImg.addEventListener('pointerup', (e) => {
+    if (e.pointerId !== shovelPointerId) return;
+    removeHunterAt(e.clientX, e.clientY);
+    resetShovelDrag();
+  });
+
+  shovelImg.addEventListener('pointercancel', (e) => {
+    if (e.pointerId !== shovelPointerId) return;
+    resetShovelDrag();
+  });
+
+  shovelImg.addEventListener('lostpointercapture', (e) => {
+    if (e.pointerId !== shovelPointerId) return;
+    resetShovelDrag();
   });
 }
