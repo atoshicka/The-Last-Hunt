@@ -26,39 +26,43 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 16px;
+  gap: clamp(8px, min(1.5vw, 2vh), 16px);
+  overflow-y: auto;
+  padding: clamp(12px, 3vh, 24px) 0;
 }
 
 .menu-title {
-  font-size: 52px;
+  font-size: clamp(24px, min(3.6vw, 6vh), 52px);
   font-weight: bold;
   color: #f3f3f3;
   text-align: center;
   letter-spacing: -1px;
   text-shadow: 0 0 40px rgba(83, 74, 183, 0.6);
-  padding-bottom: 30px;
+  padding-bottom: clamp(10px, min(2.1vw, 3vh), 30px);
 }
 
 .menu-buttons {
   display: flex;
   flex-direction: column;
-  gap: 30px;
-  width: 240px;
+  gap: clamp(14px, min(2.1vw, 2.5vh), 30px);
+  width: clamp(200px, 60vw, 240px);
+  flex-shrink: 0;
 }
 
 .level-select-buttons {
   display: flex;
   flex-direction: row;
   justify-content: center;
-  gap: 20px; 
-  width: 400px; 
-  margin-top: 20px;
+  gap: clamp(12px, 1.4vw, 20px);
+  width: clamp(260px, 80vw, 400px);
+  margin-top: clamp(10px, min(1.4vw, 2vh), 20px);
+  flex-shrink: 0;
 }
 
 .menu-btn {
   font-family: monospace;
-  font-size: 15px;
-  padding: 13px 0;
+  font-size: clamp(12px, 1.04vw, 15px);
+  padding: clamp(8px, min(0.9vw, 1.5vh), 13px) 0;
   width: 100%;
   cursor: pointer;
   letter-spacing: 1px;
@@ -103,8 +107,8 @@ body {
 
 .menu-btn-back {
   font-family: monospace;
-  font-size: 13px;
-  padding: 8px 20px;
+  font-size: clamp(11px, 0.9vw, 13px);
+  padding: clamp(6px, 0.55vw, 8px) clamp(14px, 1.4vw, 20px);
   background: transparent;
   color: #55556a;
   border: none;
@@ -119,12 +123,12 @@ body {
 
 .level-cards {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: clamp(8px, min(1.1vw, 1.5vh), 16px);
   width: 100%;
-  max-width: 800px;
-  margin: 20px 0;
-  padding: 0 20px;
+  max-width: clamp(320px, 90vw, 800px);
+  margin: clamp(8px, min(1.4vw, 2vh), 20px) 0;
+  padding: 0 clamp(12px, 1.4vw, 20px);
 }
 
 .level-card {
@@ -138,7 +142,7 @@ body {
 }
 
 .card-content {
-  padding: 16px;
+  padding: clamp(8px, min(1.1vw, 1.5vh), 16px);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -151,13 +155,13 @@ body {
 }
 
 .level-prefix {
-  font-size: 10px;
+  font-size: clamp(8px, 0.7vw, 10px);
   letter-spacing: 2px;
   color: #8888aa;
 }
 
 .level-number {
-  font-size: 34px;
+  font-size: clamp(22px, min(2.36vw, 4vh), 34px);
   font-weight: bold;
   line-height: 1;
   margin-top: 4px;
@@ -165,7 +169,7 @@ body {
 }
 
 .level-status {
-  font-size: 11px;
+  font-size: clamp(9px, 0.76vw, 11px);
   letter-spacing: 1px;
   font-weight: bold;
 }
@@ -220,20 +224,23 @@ body {
 }
 
 .squad-subtitle {
-  font-size: 13px;
+  font-size: clamp(10px, min(0.9vw, 1.6vh), 13px);
   color: #8888aa;
   letter-spacing: 1px;
   margin-top: -6px;
+  text-align: center;
+  padding: 0 12px;
+  flex-shrink: 0;
 }
 
 .squad-cards {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: clamp(8px, min(1.1vw, 1.5vh), 16px);
   width: 100%;
-  max-width: 760px;
-  margin: 20px 0;
-  padding: 0 20px;
+  max-width: clamp(300px, 88vw, 760px);
+  margin: clamp(8px, min(1.4vw, 2vh), 20px) 0;
+  padding: 0 clamp(12px, 1.4vw, 20px);
 }
 
 .squad-card {
@@ -241,7 +248,7 @@ body {
   background: #0f0f1e;
   border: 1px solid #2a2a44;
   border-radius: 4px;
-  padding: 14px 10px;
+  padding: clamp(8px, min(1vw, 1.6vh), 14px) clamp(8px, 0.7vw, 10px);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -257,8 +264,8 @@ body {
 }
 
 .squad-card-sprite {
-  width: 72px;
-  height: 72px;
+  width: clamp(40px, min(5vw, 8vh), 72px);
+  height: clamp(40px, min(5vw, 8vh), 72px);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -275,7 +282,7 @@ body {
 }
 
 .squad-card-label {
-  font-size: 12px;
+  font-size: clamp(10px, 0.83vw, 12px);
   color: #f3f3f3;
   letter-spacing: 1px;
   text-transform: uppercase;
@@ -345,8 +352,8 @@ canvas {
 
 .btn-ingame {
   left: 12px;
-  font-size: 12px;
-  padding: 6px 12px;
+  font-size: clamp(10px, 0.83vw, 12px);
+  padding: clamp(4px, 0.42vw, 6px) clamp(8px, 0.83vw, 12px);
   color: #8888aa;
 
   &:hover {
@@ -357,9 +364,9 @@ canvas {
 
 .btn-codex-open {
   right: 12px;
-  font-size: 18px;
+  font-size: clamp(14px, 1.25vw, 18px);
   color: #f3f3f3;
-  padding: 6px 10px;
+  padding: clamp(4px, 0.42vw, 6px) clamp(7px, 0.7vw, 10px);
 
   &:hover {
   border-color: #534ab7;
@@ -377,6 +384,7 @@ canvas {
   justify-content: center;
   align-items: center;
   z-index: 20;
+  overflow-y: auto;
 }
 
 #reset-confirm { 
@@ -392,10 +400,11 @@ canvas {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 20px;
+  gap: clamp(10px, min(1.4vw, 2vh), 20px);
+  padding: clamp(12px, 3vh, 24px) 0;
 }
 .overlay-content h1 {
-  font-size: 44px;
+  font-size: clamp(24px, min(3.06vw, 5vh), 44px);
   letter-spacing: -1px;
 }
 
@@ -403,21 +412,21 @@ canvas {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  width: 240px;
+  width: clamp(200px, 60vw, 240px);
 }
 
 #overlay-btn {
   font-family: monospace;
-  font-size: 15px;
-  padding: 13px 0;
+  font-size: clamp(12px, 1.04vw, 15px);
+  padding: clamp(8px, min(0.9vw, 1.5vh), 13px) 0;
   width: 100%;
   background: #534ab7;
   color: #f3f3f3;
   border: 2px solid #7a70dd;
   cursor: pointer;
   transition: background 0.15s;
-  margin-bottom: 20px;
-  margin-top: 20px;
+  margin-bottom: clamp(10px, min(1.4vw, 2vh), 20px);
+  margin-top: clamp(10px, min(1.4vw, 2vh), 20px);
 
   &:hover {
   background: #6a5fd4;
@@ -426,8 +435,8 @@ canvas {
 
 #overlay-levels-btn {
   font-family: monospace;
-  font-size: 13px;
-  padding: 10px 0;
+  font-size: clamp(11px, 0.9vw, 13px);
+  padding: clamp(7px, 0.7vw, 10px) 0;
   width: 100%;
   background: transparent;
   color: #55556a;
@@ -445,17 +454,17 @@ canvas {
   background: #0f0f1e;
   border: 2px solid #2a2a44;
   border-top: 4px solid #ff4444;
-  padding: 40px;
+  padding: clamp(20px, 2.78vw, 40px);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
-  max-width: 340px;
+  gap: clamp(10px, 1.1vw, 16px);
+  max-width: clamp(260px, 85vw, 340px);
   width: 100%;
   border-radius: 5px;
 }
 .reset-text {
-  font-size: 18px;
+  font-size: clamp(14px, 1.25vw, 18px);
   color: #f3f3f3;
   text-align: center;
 }
@@ -662,6 +671,10 @@ canvas {
   width: 5vw;
   height: 10vh;
   cursor: grab;
+  touch-action: none;
+  -webkit-user-drag: none;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .shovel-container {
@@ -671,4 +684,5 @@ canvas {
   z-index: 50;
   background-color: #1a1a2e;
   border: 3px solid #534ab7;
+  touch-action: none;
 }

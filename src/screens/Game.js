@@ -308,32 +308,6 @@ function drawMoney() {
   ctx.fillText(`${state.playerMoney}`, canvas.width - 20, 42);
 }
 
-const shovelImg = document.getElementById('shovel');
-if (shovelImg) {
-  shovelImg.addEventListener('dragstart', (e) => {
-    e.dataTransfer.setData('text/plain', 'shovel_action');
-  });
-}
-
-canvas.addEventListener('dragover', (e) => {
-  e.preventDefault();
-});
-
-canvas.addEventListener('drop', (e) => {
-  e.preventDefault();
-
-  const { x: mouseX, y: mouseY } = getCanvasCoords(e.clientX, e.clientY);
-  
-  const targetIndex = state.hunters.findIndex(h => {
-    return Math.abs(h.x - mouseX) < 48 && Math.abs(h.y - mouseY) < 48;
-  });
-
-  if (targetIndex !== -1) {
-    state.hunters[targetIndex].isDead = true;
-    state.hunters.splice(targetIndex, 1);
-  }
-});
-
 function drawWaveProgress() {
   if (state.waveTimer < state.waveDelay) return;
 
