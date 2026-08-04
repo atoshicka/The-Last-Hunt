@@ -6,6 +6,7 @@ export const state = {
   enemies: [],
   currencies: [],
   bullets: [],
+  blazingBullets: [],
   crossOfExile: [],
   piercingShot: [],
   bladeWave: [],

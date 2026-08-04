@@ -1,0 +1,23 @@
+export const level5 = {
+  spawnQueue: [
+    { count: 1, type: 'ghost' },
+    { count: 2, type: 'ghost' },
+    { count: 2, type: 'zombie' },
+    { count: 6, type: 'ghost' },
+    { count: 2, type: 'dog' },
+    { count: 8, type: 'zombie' },
+    { count: 6, type: 'ghost' },
+    { count: 2, type: 'death' },
+    { count: 20, type: 'imp' },
+    { count: 10, type: 'zombie' },
+    { count: 3, type: 'dog' },
+    { count: 4, type: 'death' },
+    { count: 20, type: 'imp' },
+    { count: 12, type: 'zombie' },
+    { count: 9, type: 'ghost' },
+  ],
+  availableCards: ['comissar', 'angel', 'salt', 'lans', 'ciul', 'kain', 'mad'],
+  startMoney: 50,
+  waveDelay: 20 * 60,
+  spawnInterval: 14 * 60,
+};

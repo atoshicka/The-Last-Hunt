@@ -1,7 +1,6 @@
 import { allCards, cardSprites } from './config.js';
 
 const MAX_SQUAD = 5;
-const HUNTER_TYPES = Object.keys(allCards);
 
 const squadScreen = document.getElementById('squad-select');
 const squadCardsContainer = document.getElementById('squad-cards');
@@ -13,6 +12,7 @@ let onStartCallback = null;
 let onLevelsCallback = null;
 let renderLoopId = null;
 let spriteCanvases = [];
+let currentUnlocked = [];
 
 export function initSquadSelect({ onStart, onLevels }) {
   onStartCallback = onStart;
@@ -31,8 +31,10 @@ export function initSquadSelect({ onStart, onLevels }) {
   });
 }
 
-export function showSquadSelect() {
+export function showSquadSelect(unlockedTypes = null) {
   selected = [];
+  
+  currentUnlocked = unlockedTypes || Object.keys(allCards); 
 
   document.getElementById('main-menu').classList.add('hidden');
   document.getElementById('level-select').classList.add('hidden');
@@ -53,8 +55,10 @@ function renderCards() {
   squadCardsContainer.innerHTML = '';
   spriteCanvases = [];
 
-  HUNTER_TYPES.forEach(type => {
+  currentUnlocked.forEach(type => {
     const base = allCards[type];
+    
+    if (!base) return;
 
     const card = document.createElement('div');
     card.className = 'squad-card';
@@ -109,12 +113,19 @@ function updateCardStates() {
     const type = card.dataset.type;
     const isSelected = selected.includes(type);
     card.classList.toggle('selected', isSelected);
+    
     card.classList.toggle('disabled', full && !isSelected);
   });
 }
 
 function updateStartButton() {
   btnStart.disabled = selected.length !== MAX_SQUAD;
+  
+  if (selected.length === MAX_SQUAD) {
+    btnStart.textContent = 'В бой';
+  } else {
+    btnStart.textContent = `Выберите еще ${MAX_SQUAD - selected.length}`;
+  }
 }
 
 function startRenderLoop() {
@@ -124,7 +135,7 @@ function startRenderLoop() {
     spriteCanvases.forEach(({ ctx, sprite }) => {
       if (!sprite) return;
       ctx.clearRect(0, 0, 96, 96);
-      sprite.draw(ctx, 0, 0, 1);
+      sprite.draw(ctx, 0, 0, 1); 
     });
     renderLoopId = requestAnimationFrame(loop);
   }
