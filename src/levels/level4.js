@@ -13,7 +13,7 @@ export const level4 = {
     { count: 3, type: 'dog' },
     { count: 3, type: 'death' },
     { count: 10, type: 'imp' },
-    { count: 30, type: 'imp' },
+    { count: 12, type: 'imp' },
     { count: 4, type: 'death' },
   ],
   availableCards: ['comissar', 'angel', 'salt', 'lans', 'ciul', 'kain'],

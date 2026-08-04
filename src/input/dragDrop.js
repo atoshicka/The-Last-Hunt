@@ -6,6 +6,7 @@ import { Lans } from '../entities/hunters/Lans.js';
 import { Salt } from '../entities/Salt.js';
 import { Ciul } from '../entities/hunters/Ciul.js';
 import { Kain } from '../entities/hunters/Kain.js';
+import { Mad } from "../entities/hunters/Mad.js";
 
 function createDragSprite(type, mx, my) {
   if (type === 'comissar') return new Comissar(mx, my);
@@ -14,6 +15,7 @@ function createDragSprite(type, mx, my) {
   if (type === 'salt') return new Salt(mx, my);
   if (type === 'ciul') return new Ciul(mx, my);
   if (type === 'kain') return new Kain(mx, my);
+  if (type === 'mad') return new Mad(mx, my);
   return null;
 }
 
@@ -25,6 +27,7 @@ function placeHunter(type, pos, col, row) {
   else if (type === 'salt') h = new Salt(pos.x, pos.y);
   else if (type === 'ciul') h = new Ciul(pos.x, pos.y);
   else if (type === 'kain') h = new Kain(pos.x, pos.y);
+  else if (type === 'mad') h = new Mad(pos.x, pos.y);
   if (!h) return;
 
   h.col = col;
@@ -74,7 +77,7 @@ export function initDragDrop() {
     const { x: mx, y: my } = getCanvasCoords(e.clientX, e.clientY);
 
     if (state.gameState === 'cardDrop') {
-      const clickedCard = [state.droppedLansCard, state.droppedCiulCard, state.droppedKainCard].find(c =>
+      const clickedCard = [state.droppedLansCard, state.droppedCiulCard, state.droppedKainCard, state.droppedMadCard].find(c =>
         c && mx >= c.x && mx <= c.x + c.width && my >= c.y && my <= c.y + c.height
       );
 
@@ -82,6 +85,7 @@ export function initDragDrop() {
         state.droppedLansCard = null;
         state.droppedCiulCard = null;
         state.droppedKainCard = null;
+        state.droppedMadCard = null;
         state.gameState = 'win';
         canvas.dispatchEvent(new CustomEvent('gameWin'));
       }

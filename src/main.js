@@ -3,6 +3,7 @@ import { level1 } from './levels/level1.js';
 import { level2 } from './levels/level2.js';
 import { level3 } from './levels/level3.js';
 import { level4 } from './levels/level4.js';
+import { level5 } from './levels/level5.js';
 import { initMainMenu, showMainMenu } from './screens/MainMenu.js';
 import { initLevelSelect, showLevelSelect } from './screens/LevelSelect.js';
 import { initOverlay, showOverlay } from './screens/Overlay.js';
@@ -12,11 +13,24 @@ import { initDragDrop } from './input/dragDrop.js';
 import { initCodex, initCodexControls } from './screens/Codex.js';
 import { canvas, ctx, scaleCanvas } from './core/canvas.js';
 
-const levels = [level1, level2, level3, level4];
-
+const levels = [level1, level2, level3, level4, level5];
 const SQUAD_SELECT_MIN_LEVEL_INDEX = 3;
-
 let pendingLevelIndex = 0;
+
+function getUnlockedHunters() {
+  const baseHunters = ['comissar', 'angel', 'salt']; 
+  
+  const progress = JSON.parse(localStorage.getItem('game_progress')) || { completedLevels: [] };
+  
+  let unlocked = [...baseHunters];
+
+  if (progress.completedLevels.includes(0)) unlocked.push('lans');
+  if (progress.completedLevels.includes(1)) unlocked.push('ciul');
+  if (progress.completedLevels.includes(2)) unlocked.push('kain');
+  if (progress.completedLevels.includes(3)) unlocked.push('mad');
+
+  return [...new Set(unlocked)];
+}
 
 initMainMenu({
   onPlay: (index) => requestStartLevel(index),
@@ -62,13 +76,21 @@ initSquadSelect({
 
 document.getElementById('gameCanvas').addEventListener('gameWin', () => {
   state.gameState = 'win';
+  
+  const progress = JSON.parse(localStorage.getItem('game_progress')) || { completedLevels: [] };
+  if (!progress.completedLevels.includes(state.currentLevel)) {
+    progress.completedLevels.push(state.currentLevel);
+    localStorage.setItem('game_progress', JSON.stringify(progress));
+  }
+
   showOverlay('win', state.currentLevel, levels.length);
 });
 
 function requestStartLevel(index) {
   if (index >= SQUAD_SELECT_MIN_LEVEL_INDEX) {
     pendingLevelIndex = index;
-    showSquadSelect();
+    const unlocked = getUnlockedHunters();
+    showSquadSelect(unlocked);
     return;
   }
   startLevel(index);

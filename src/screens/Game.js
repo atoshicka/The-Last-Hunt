@@ -1,16 +1,21 @@
 import { canvas, ctx, COLS, ROWS, CELL_SIZE, GRID_X, GRID_Y, getCellCenter, getCanvasCoords } from '../core/canvas.js';
 import { state, resetState } from '../core/state.js';
 import { allCards, cardSprites } from './config.js';
+
 import { Ghost } from '../entities/enemies/Ghost.js';
+import { Zombie } from '../entities/enemies/Zombie.js';
 import { HellishDog } from '../entities/enemies/HellishDog.js';
 import { Imp } from '../entities/enemies/Imp.js';
 import { Death } from '../entities/enemies/Death.js';
+
 import { Bullet } from '../entities/projectiles/Bullet.js';
 import { CrossOfExile } from '../entities/projectiles/CrossOfExile.js';
 import { PiercingShot } from '../entities/projectiles/PiercingShot.js';
+import { BladeWave } from '../entities/projectiles/BladeWave.js';
+import { BlazingBullet } from '../entities/projectiles/BlazingBullet.js';
+
 import { Currency } from '../entities/Currency.js';
 import { showOverlay } from './Overlay.js';
-import { BladeWave } from '../entities/projectiles/BladeWave.js';
 
 const waveGhostImage = new Image();
 waveGhostImage.src = 'src/assets/enemies/ghost.png';
@@ -63,16 +68,11 @@ export function update(levels) {
     state.spawnTimer++;
 
     if (state.spawnTimer >= state.spawnInterval) {
-
       if (!state.waveEnemyQueue) {
         const wave = state.spawnQueue[state.currentWave];
         state.waveEnemyQueue = [];
         for (let i = 0; i < wave.count; i++) {
-          state.waveEnemyQueue.push({
-            type: wave.type,
-            delay: i * 90,
-            spawned: false,
-          });
+          state.waveEnemyQueue.push({ type: wave.type, delay: i * 90, spawned: false });
         }
         state.waveEnemyTimer = 0;
       }
@@ -86,14 +86,12 @@ export function update(levels) {
           const pos = getCellCenter(9, row);
 
           let enemy;
-          if (entry.type === 'dog') {
-            enemy = new HellishDog(pos.x, pos.y, GRID_X);
-          } else if (entry.type === 'imp') {
-            enemy = new Imp(pos.x, pos.y, GRID_X);
-          } else if (entry.type === 'death') {
-            enemy = new Death(pos.x, pos.y, GRID_X); 
-          } else {
-            enemy = new Ghost(pos.x, pos.y, GRID_X);
+          switch (entry.type) {
+            case 'dog': enemy = new HellishDog(pos.x, pos.y, GRID_X); break;
+            case 'imp': enemy = new Imp(pos.x, pos.y, GRID_X); break;
+            case 'death': enemy = new Death(pos.x, pos.y, GRID_X); break;
+            case 'zombie': enemy = new Zombie(pos.x, pos.y, GRID_X); break;
+            default: enemy = new Ghost(pos.x, pos.y, GRID_X); break;
           }
 
           enemy.row = row;
@@ -116,6 +114,7 @@ export function update(levels) {
     if (result?.flame) state.crossOfExile.push(new CrossOfExile(result.x, result.y));
     if (result?.piercingShot) state.piercingShot.push(new PiercingShot(result.x, result.y));
     if (result?.bladeWave) state.bladeWave.push(new BladeWave(result.x, result.y, result.target));
+    if (result?.blazingShoot) state.blazingBullets.push(new BlazingBullet(result.x, result.y));
 
     if (h.constructor.name === 'Angel') {
       h.dropTimer = (h.dropTimer || 0) + 1;
@@ -128,25 +127,12 @@ export function update(levels) {
 
   state.cards.forEach(card => { if (card.timer > 0) card.timer--; });
 
-  for (let i = state.bullets.length - 1; i >= 0; i--) {
-    state.bullets[i].update(state.enemies);
-    if (state.bullets[i].dead) state.bullets.splice(i, 1);
-  }
-
-  for (let i = state.crossOfExile.length - 1; i >= 0; i--) {
-    state.crossOfExile[i].update(state.enemies);
-    if (state.crossOfExile[i].dead) state.crossOfExile.splice(i, 1);
-  }
-
-  for (let i = state.piercingShot.length - 1; i >= 0; i--) {
-    state.piercingShot[i].update(state.enemies);
-    if (state.piercingShot[i].dead) state.piercingShot.splice(i, 1);
-  }
-
-  for (let i = state.bladeWave.length - 1; i >= 0; i--) {
-    state.bladeWave[i].update();
-    if (state.bladeWave[i].dead) state.bladeWave.splice(i, 1); 
-  }
+  updateArray(state.bullets, state.enemies);
+  updateArray(state.crossOfExile, state.enemies);
+  updateArray(state.piercingShot, state.enemies);
+  updateArray(state.bladeWave);
+  updateArray(state.blazingBullets, state.enemies);
+  updateArray(state.darkProjectiles);
 
   state.enemies.forEach(e => {
     if (e.constructor.name === 'Death') {
@@ -154,59 +140,57 @@ export function update(levels) {
     } else {
       e.update(state.hunters);
     }
+    
     if (e.reachedEnd) {
       state.gameState = 'gameover';
       showOverlay('gameover', state.currentLevel, levels.length);
     }
   });
 
-  for (let i = state.darkProjectiles.length - 1; i >= 0; i--) {
-    state.darkProjectiles[i].update();
-    if (state.darkProjectiles[i].dead) state.darkProjectiles.splice(i, 1);
-  }
-
-  for (let i = state.hunters.length - 1; i >= 0; i--) {
-    if (state.hunters[i].isDead) state.hunters.splice(i, 1);
-  }
-  for (let i = state.enemies.length - 1; i >= 0; i--) {
-    if (state.enemies[i].isDead) state.enemies.splice(i, 1);
-  }
+  cleanupDead(state.hunters);
+  cleanupDead(state.enemies);
 
   if (state.currentWave >= state.spawnQueue.length && state.enemies.length === 0 && !state.waveEnemyQueue) {
     if (state.currentLevel === 0 && !state.droppedLansCard) {
-      state.gameState = 'cardDrop';
-      state.droppedLansCard = {
-        x: Math.random() * (canvas.width - 300) + 200,
-        y: Math.random() * (canvas.height - 250) + 100,
-        width: 110,
-        height: 80,
-        bobTimer: 0,
-      };
+      triggerCardDrop('droppedLansCard');
     } else if (state.currentLevel === 1 && !state.droppedCiulCard) {
-      state.gameState = 'cardDrop';
-      state.droppedCiulCard = {
-        x: Math.random() * (canvas.width - 300) + 200,
-        y: Math.random() * (canvas.height - 250) + 100,
-        width: 110,
-        height: 80,
-        bobTimer: 0,
-      };
+      triggerCardDrop('droppedCiulCard');
     } else if (state.currentLevel === 2 && !state.droppedKainCard) {
-      state.gameState = 'cardDrop';
-      state.droppedKainCard = {
-        x: Math.random() * (canvas.width - 300) + 200,
-        y: Math.random() * (canvas.height - 250) + 100,
-        width: 110,
-        height: 80,
-        bobTimer: 0,
-      };
-    } else if (state.currentLevel >= 3) {
+      triggerCardDrop('droppedKainCard');
+    } else if (state.currentLevel === 3 && !state.droppedMadCard) {
+      triggerCardDrop('droppedMadCard');
+    } else if (state.currentLevel >= 4) {
       state.gameState = 'win';
       showOverlay('win', state.currentLevel, levels.length);
     }
   }
 
   state.currencies.forEach(c => c.update());
+}
+
+function triggerCardDrop(cardKey) {
+  state.gameState = 'cardDrop';
+  state[cardKey] = {
+    x: Math.random() * (canvas.width - 300) + 200,
+    y: Math.random() * (canvas.height - 250) + 100,
+    width: 110,
+    height: 80,
+    bobTimer: 0,
+  };
+}
+
+function updateArray(arr, targets = null) {
+  for (let i = arr.length - 1; i >= 0; i--) {
+    if (targets) arr[i].update(targets);
+    else arr[i].update();
+    if (arr[i].dead) arr.splice(i, 1);
+  }
+}
+
+function cleanupDead(arr) {
+  for (let i = arr.length - 1; i >= 0; i--) {
+    if (arr[i].isDead) arr.splice(i, 1);
+  }
 }
 
 export function draw() {
@@ -224,11 +208,10 @@ export function draw() {
   state.piercingShot.forEach(p => p.draw(ctx));
   state.bladeWave.forEach(b => b.draw(ctx));
   state.darkProjectiles.forEach(p => p.draw(ctx));
+  state.blazingBullets.forEach(b => b.draw(ctx));
 
   drawCards();
-
   state.currencies.forEach(c => c.draw(ctx));
-
   drawDroppedCards();
   drawWaveProgress();
   drawMoney();
@@ -346,7 +329,6 @@ function drawDroppedCards() {
 
     ctx.fillStyle = '#1a1a2e';
     ctx.fillRect(c.x, bobY, c.width, c.height);
-
     ctx.strokeStyle = '#ffd700'; 
     ctx.lineWidth = 2;
     ctx.strokeRect(c.x, bobY, c.width, c.height);
@@ -366,4 +348,5 @@ function drawDroppedCards() {
   drawCard(state.droppedLansCard, 'lans', 'lans');
   drawCard(state.droppedCiulCard, 'ciul', 'ciul');
   drawCard(state.droppedKainCard, 'kain', 'kain');
+  drawCard(state.droppedMadCard, 'mad', 'mad');
 }

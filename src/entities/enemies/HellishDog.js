@@ -57,9 +57,14 @@ export class HellishDog {
                 this.attackTimer++;
                 if (this.attackTimer >= this.attackSpeed) {
                     this.attackTimer = 0;
-                    target.hp -= this.damage;
-                    if (target.hp <= 0) target.isDead = true;
-                }
+                    
+                    if (typeof target.takeDamage === 'function') {
+                        target.takeDamage(this.damage);
+                        } else {
+                        target.hp -= this.damage;
+                        if (target.hp <= 0) target.isDead = true;
+                        }
+                    }
             } else {
                 this.target = null;
                 this.x -= this.speed;

@@ -58,7 +58,7 @@ const entries = [
     {
         name: 'Ciul',
         role: 'Hunters',
-        description: 'Охотник, способная своими пулями пронзить всех монстров на своем пути. С небольшим шансом может выстрелить пулей с солью, что замедлит врагов.',
+        description: 'Охотница, способная своими пулями пронзить всех монстров на своем пути. С небольшим шансом может выстрелить пулей с солью, что замедлит врагов.',
         sprite: new Sprite({ src: 'src/assets/hunters/ciul-idle.png', frameWidth: 96, frameHeight: 96, frames: 1, speed: 1 }),
         spriteSize: 92,
         scale: 1,
@@ -89,6 +89,24 @@ const entries = [
         sprite: new Sprite({ src: 'src/assets/enemies/death-idle.png', frameWidth: 96, frameHeight: 96, frames: 1, speed: 1 }),
         spriteSize: 92,
         scale: 1,
+    },
+
+    {
+        name: 'Mad',
+        role: 'Hunters',
+        description: 'Испепеляющая охотница, имеющая барьер из соли вокруг себя.',
+        sprite: new Sprite({ src: 'src/assets/hunters/mad-full-idle.png', frameWidth: 96, frameHeight: 96, frames: 1, speed: 1 }),
+        spriteSize: 92,
+        scale: 1,
+    },
+
+    {
+        name: 'Zombie',
+        role: 'Enemies',
+        description: 'Зомби, который хочет мозги уааа',
+        sprite: new Sprite({ src: 'src/assets/enemies/zombie.png', frameWidth: 96, frameHeight: 96, frames: 1, speed: 1 }),
+        spriteSize: 64,
+        scale: 2.5,
     },
 ];
 
