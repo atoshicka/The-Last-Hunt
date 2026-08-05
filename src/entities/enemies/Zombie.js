@@ -7,7 +7,7 @@ export class Zombie {
     this.gridX = gridX;
     this.scale = 1.5;
     this.speed = 0.4;
-    this.hp = 180;
+    this.hp = 200;
     this.isDead = false;
     this.damage = 30;
     this.attackTimer = 0;

@@ -7,7 +7,7 @@ export class Mad {
     this.scale = 1;
     this.state = 'idle';
     this.attackTimer = 0;
-    this.attackSpeed = 100;
+    this.attackSpeed = 110;
     this.row = null;
     this.col = null;
     this.hp = 120;
