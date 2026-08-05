@@ -2,7 +2,7 @@ export class BlazingBullet {
     constructor(x, y) {
         this.x = x;
         this.y = y + 6;
-        this.speed = 6;
+        this.speed = 5;
         this.damage = 30;
         this.dead = false;
         this.timer = 0;

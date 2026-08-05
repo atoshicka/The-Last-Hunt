@@ -69,11 +69,25 @@ export function update(levels) {
 
     if (state.spawnTimer >= state.spawnInterval) {
       if (!state.waveEnemyQueue) {
-        const wave = state.spawnQueue[state.currentWave];
+        const waveList = state.spawnQueue[state.currentWave];
+        let enemiesPool = [];
+
+        waveList.forEach(group => {
+          for (let i = 0; i < group.count; i++) {
+            enemiesPool.push(group.type);
+          }
+        });
+
+        enemiesPool.sort(() => Math.random() - 0.5);
+
         state.waveEnemyQueue = [];
-        for (let i = 0; i < wave.count; i++) {
-          state.waveEnemyQueue.push({ type: wave.type, delay: i * 90, spawned: false });
-        }
+          for (let i = 0; i < enemiesPool.length; i++) {
+            state.waveEnemyQueue.push({ 
+              type: enemiesPool[i], 
+              delay: i * 90,
+              spawned: false 
+            });
+          }
         state.waveEnemyTimer = 0;
       }
 
@@ -209,9 +223,10 @@ export function draw() {
   state.bladeWave.forEach(b => b.draw(ctx));
   state.darkProjectiles.forEach(p => p.draw(ctx));
   state.blazingBullets.forEach(b => b.draw(ctx));
+  
+  state.currencies.forEach(c => c.draw(ctx));
 
   drawCards();
-  state.currencies.forEach(c => c.draw(ctx));
   drawDroppedCards();
   drawWaveProgress();
   drawMoney();
