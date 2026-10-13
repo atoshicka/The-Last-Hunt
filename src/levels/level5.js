@@ -12,13 +12,10 @@ export const level5 = {
     [ { count: 10, type: 'zombie' } ],
     [ { count: 3, type: 'dog' } ],
     [ { count: 4, type: 'death' } ],
-    [ { count: 20, type: 'imp' } ],
-    [ { count: 12, type: 'zombie' } ],
-    [ { count: 9, type: 'ghost' }, { count: 11, type: 'zombie' }, { count: 3, type: 'death' }, { count: 6, type: 'imp' } ],
   ],
 
   availableCards: ['comissar', 'angel', 'salt', 'lans', 'ciul', 'kain', 'mad'],
   startMoney: 50,
-  waveDelay: 20 * 60,
+  waveDelay: 18 * 60,
   spawnInterval: 14 * 60,
 };

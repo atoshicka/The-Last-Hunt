@@ -1,40 +1,30 @@
-import { Sprite } from '../Sprite.js';
+import { Hunter, createSprite } from './Hunter.js';
 
-export class Kain {
+export class Kain extends Hunter {
   constructor(x, y) {
-    this.x = x;
-    this.y = y;
-    this.scale = 1;
-    this.state = 'idle';
-    this.row = null;
-    this.col = null;
-    this.hp = 300;
-    this.isDead = false;
+    super(x, y, { hp: 300, offset: { x: 48, y: 48 } });
+
     this.hasAttacked = false;
-    this.attackTimer = 0;
     this.maxAttackTime = 50;
 
-    this.idleSprite = new Sprite({
-      src: 'src/assets/hunters/kain-idle.png',
-      frameWidth: 96, frameHeight: 96, frames: 1, speed: 1,
-    });
-
-    this.attackSprite = new Sprite({
-      src: 'src/assets/hunters/kain-attack.png',
-      frameWidth: 96, frameHeight: 96, frames: 1, speed: 1,
-    });
+    this.idleSprite = createSprite('src/assets/hunters/kain-idle.png');
+    this.attackSprite = createSprite('src/assets/hunters/kain-attack.png');
   }
 
-  update(enemies = []) {
-    if (this.isDead) return null;
+  get canSleep() {
+    return this.state !== 'attack';
+  }
 
+  getSprite() {
+    return this.state === 'attack' ? this.attackSprite : this.idleSprite;
+  }
+
+  onUpdate(enemies) {
     if (this.state === 'attack') {
       this.attackTimer++;
       this.attackSprite.update();
 
-      if (this.attackTimer >= this.maxAttackTime) {
-        this.isDead = true;
-      }
+      if (this.attackTimer >= this.maxAttackTime) this.die();
       return null;
     }
 
@@ -53,11 +43,5 @@ export class Kain {
     this.state = 'idle';
     this.idleSprite.update();
     return null;
-  }
-
-  draw(ctx) {
-    if (this.isDead) return;
-    const sprite = this.state === 'attack' ? this.attackSprite : this.idleSprite;
-    sprite.draw(ctx, this.x - 48, this.y - 48, this.scale);
   }
 }

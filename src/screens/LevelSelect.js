@@ -19,13 +19,26 @@ export function showLevelSelect(levels) {
 function renderLevelCards() {
   levelCardsContainer.innerHTML = '';
 
-  _levels.forEach((_, index) => {
+  _levels.forEach((level, index) => {
     const completed = isLevelCompleted(index);
     const unlocked = isLevelUnlocked(index);
-    const levelNum = String(index + 1).padStart(2, '0');
+    const isBonus = !!level.isBonus;
+
+    const levelNum = isBonus && !completed
+      ? '?'
+      : String(index + 1).padStart(2, '0');
+
+    let status = '';
+    if (completed) status = 'ПРОЙДЕН';
+    else if (isBonus) status = 'БОНУС';
 
     const card = document.createElement('div');
-    card.className = `level-card ${unlocked ? '' : 'locked'} ${completed ? 'completed' : ''}`;
+    card.className = [
+      'level-card',
+      unlocked ? '' : 'locked',
+      completed ? 'completed' : '',
+      isBonus ? 'bonus' : '',
+    ].filter(Boolean).join(' ');
 
     if (unlocked) {
       card.innerHTML = `
@@ -34,7 +47,7 @@ function renderLevelCards() {
           <div class="level-header">
             <span class="level-number">${levelNum}</span>
           </div>
-          <div class="level-status">${completed ? 'ПРОЙДЕН' : ''}</div>
+          <div class="level-status">${status}</div>
         </div>
       `;
       card.addEventListener('click', () => {

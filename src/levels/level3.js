@@ -12,12 +12,10 @@ export const level3 = {
     [ { count: 8, type: 'imp' } ],
     [ { count: 4, type: 'ghost' } ],
     [ { count: 6, type: 'dog' } ],
-    [ { count: 10, type: 'imp' } ],
-    [ { count: 20, type: 'imp' }, { count: 6, type: 'dog' }, { count: 4, type: 'ghost' } ],
   ],
 
   availableCards: ['comissar', 'angel', 'salt', 'lans', 'ciul'],
   startMoney: 50,
-  waveDelay: 20 * 60,
+  waveDelay: 18 * 60,
   spawnInterval: 13 * 60,
 };

@@ -469,17 +469,16 @@ canvas {
   text-align: center;
 }
 
+/* ---------- Кодекс ---------- */
+
 .codex-book {
   position: relative;
-  width: fit-content;
-  min-width: clamp(300px, 42vw, 560px);
-  max-width: clamp(560px, 68vw, 980px);
-  min-height: clamp(260px, 32vw, 320px);
+  width: min(92vw, 520px);
   background: #0a0a14;
   border: 1px solid #2a2a44;
   border-top: 3px solid #534ab7;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
-  padding: clamp(16px, 2.5vw, 30px) clamp(18px, 3vw, 35px) clamp(14px, 2vw, 25px);
+  padding: clamp(20px, 3vw, 32px);
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
@@ -503,21 +502,41 @@ canvas {
 
 #codex-page {
   display: grid;
-  grid-template-columns: clamp(110px, 15vw, 180px) minmax(260px, 620px);
+  grid-template-columns: clamp(90px, 12vw, 140px) 1fr;
   grid-template-rows: auto auto 1fr;
-  column-gap: clamp(16px, 3vw, 35px);
-  width: fit-content;
+  column-gap: clamp(20px, 3vw, 32px);
+  width: 100%;
   flex-grow: 1;
+}
+
+.codex-sprite-wrap {
+  grid-column: 1;
+  grid-row: 1;
+  width: clamp(90px, 12vw, 140px);
+  height: clamp(90px, 12vw, 140px);
+  background: #05050a;
+  border: 1px solid #2a2a44;
+  border-radius: 4px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: inset 0 0 25px rgba(0, 0, 0, 0.6);
+}
+
+.codex-sprite-wrap canvas {
+  image-rendering: pixelated;
+  max-width: 100%;
+  max-height: 100%;
 }
 
 .codex-role {
   grid-column: 1;
-  grid-row: 1;
+  grid-row: 2;
   justify-self: start;
+  margin-top: 10px;
   font-size: clamp(8px, 0.8vw, 10px);
   letter-spacing: 2px;
   text-transform: uppercase;
-  margin-bottom: 10px;
   padding: 4px 8px;
   background: #131326;
   border-radius: 2px;
@@ -534,55 +553,66 @@ canvas {
   border-left: 2px solid #ff4444;
 }
 
-.codex-sprite-wrap {
-  grid-column: 1;
-  grid-row: 2 / span 2;
-  width: clamp(110px, 15vw, 180px);
-  height: clamp(110px, 15vw, 180px);
-  background: #05050a;
-  border: 1px solid #2a2a44;
-  border-radius: 4px;
+.codex-info {
+  grid-column: 2;
+  grid-row: 1 / span 3;
   display: flex;
-  justify-content: center;
-  align-items: center;
-  box-shadow: inset 0 0 25px rgba(0, 0, 0, 0.6);
-}
-.codex-sprite-wrap canvas {
-  image-rendering: pixelated;
-  max-width: 100%;
-  max-height: 100%;
+  flex-direction: column;
 }
 
 .codex-name {
-  grid-column: 2;
-  grid-row: 2;
   font-size: clamp(18px, 2.2vw, 28px);
   font-weight: bold;
   color: #f3f3f3;
   letter-spacing: 1px;
-  margin-top: -4px;
   margin-bottom: 12px;
   text-align: left;
 }
 
 .codex-desc {
-  grid-column: 2;
-  grid-row: 3;
-  align-self: start;
   color: #8888aa;
   text-align: left;
   line-height: 1.6;
   font-size: clamp(12px, 1.1vw, 14px);
 }
 
+.codex-stats {
+  align-self: flex-start;
+  width: 100%;
+  max-width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: clamp(18px, 2.2vw, 28px);
+  padding: clamp(8px, 1vw, 12px) clamp(10px, 1.2vw, 14px);
+  border: 1px solid #2a2a44;
+  border-radius: 2px;
+}
+
+.codex-stat {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  font-size: clamp(11px, 1vw, 13px);
+}
+
+.codex-stat-label {
+  color: #8888aa;
+  letter-spacing: 1px;
+}
+
+.codex-stat-value {
+  color: #ffd700;
+  font-weight: bold;
+}
+
 .codex-nav {
-  grid-column: 1 / -1;
-  grid-row: 4;
   display: flex;
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  margin-top: clamp(16px, 2vw, 25px);
+  margin-top: clamp(12px, 1.5vw, 18px);
 }
 
 .codex-arrow {
@@ -604,63 +634,69 @@ canvas {
 }
 
 .codex-counter {
-  grid-column: 1 / -1;
-  grid-row: 4;
-  justify-self: center;
-  align-self: center;
   font-size: clamp(10px, 0.9vw, 12px);
   color: #55557a;
   letter-spacing: 2px;
-  margin-top: clamp(16px, 2vw, 25px);
   pointer-events: none;
 }
 
 @media (max-width: 480px) {
   .codex-book {
     width: 92vw;
-    min-width: 0;
-    max-width: 92vw;
-    min-height: auto;
   }
 
   #codex-page {
-    width: 100%;
-    grid-template-columns: 1fr;
-    grid-template-rows: auto auto auto auto;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto;
+    column-gap: 10px;
     row-gap: 12px;
   }
 
-  .codex-role {
-    grid-column: 1;
-    grid-row: 1;
+  .codex-info {
+    display: contents;
   }
 
   .codex-sprite-wrap {
-    grid-column: 1;
-    grid-row: 2;
+    grid-column: 1 / -1;
+    grid-row: 1;
+    justify-self: center;
     width: 140px;
     height: 140px;
-    justify-self: center;
   }
 
   .codex-name {
     grid-column: 1;
-    grid-row: 3;
-    text-align: center;
+    grid-row: 2;
+    justify-self: end;
+    align-self: center;
+    margin: 0;
     font-size: 20px;
   }
 
+  .codex-role {
+    grid-column: 2;
+    grid-row: 2;
+    justify-self: start;
+    align-self: center;
+    margin-top: 0;
+  }
+
   .codex-desc {
-    grid-column: 1;
-    grid-row: 4;
+    grid-column: 1 / -1;
+    grid-row: 3;
     text-align: center;
     font-size: 13px;
   }
 
-  .codex-nav {
-    grid-row: 5;
+  .codex-stats {
+    grid-column: 1 / -1;
+    grid-row: 4;
+    justify-self: center;
+    margin-top: 0;
   }
 }
+
+/* ---------- Прочее ---------- */
 
 #btn-continue {
   background-color: #534ab7;
@@ -685,4 +721,116 @@ canvas {
   background-color: #1a1a2e;
   border: 3px solid #534ab7;
   touch-action: none;
+}
+
+.tutorial-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 40;
+  padding: clamp(8px, 2vh, 20px);
+}
+
+.tutorial-modal {
+  background: #0f0f1e;
+  border: 2px solid #2a2a44;
+  border-top: 4px solid #534ab7;
+  border-radius: 5px;
+  padding: clamp(20px, 2.78vw, 40px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(14px, 1.8vw, 24px);
+  width: 100%;
+  max-width: clamp(280px, 85vw, 520px);
+  max-height: 90vh;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+}
+
+.tutorial-title {
+  font-size: clamp(20px, 2.2vw, 30px);
+  color: #f3f3f3;
+  letter-spacing: 1px;
+  text-align: center;
+  text-shadow: 0 0 30px rgba(83, 74, 183, 0.6);
+}
+
+.tutorial-body {
+  width: 100%;
+  overflow-y: auto;
+  text-align: left;
+  color: #8888aa;
+  line-height: 1.7;
+  font-size: clamp(13px, 1.2vw, 16px);
+  padding-right: 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+}
+
+.tutorial-body h3 {
+  color: #ffd700;
+  font-size: clamp(12px, 1.1vw, 14px);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.tutorial-accent-text {
+  color: #ffd700;
+  font-size: clamp(12px, 1.1vw, 14px);
+  letter-spacing: 1px;
+  font-weight: 600;
+}
+
+.tutorial-body p + p {
+  margin-top: 10px;
+}
+
+.tutorial-modal .menu-btn {
+  width: clamp(160px, 50vw, 220px);
+  flex-shrink: 0;
+}
+
+.level-card.bonus:not(.locked):not(.completed) {
+  border-left: 4px solid #ff5c8a;
+}
+
+.level-card.bonus:not(.locked):not(.completed) .level-number,
+.level-card.bonus:not(.locked):not(.completed) .level-status {
+  color: #ff5c8a;
+}
+
+.level-card.bonus:not(.locked):not(.completed):hover {
+  border-color: #ff5c8a;
+  background: #1f1020;
+  transform: translateY(-3px);
+}
+
+.level-card.bonus.completed {
+  border-left-color: #ff5c8a;
+}
+
+.level-card.bonus.completed .level-number,
+.level-card.bonus.completed .level-status {
+  color: #ff5c8a;
+}
+
+.level-card.bonus.completed:hover {
+  border-color: #ff5c8a;
+}
+
+.level-card.bonus.locked {
+  border-left-color: #5a2a40;
+}
+
+.level-card.bonus.locked .level-number {
+  color: #6b3a52;
 }

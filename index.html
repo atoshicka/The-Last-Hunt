@@ -13,6 +13,7 @@
     <div class="menu-buttons">
       <button class="menu-btn primary" id="btn-play">Играть</button>
       <button class="menu-btn secondary" id="btn-levels">Выбор уровня</button>
+      <button class="menu-btn secondary" id="btn-tutorial">Обучение</button>
     </div>
   </div>
 
@@ -50,16 +51,39 @@
     </div>
   </div>
 
+  <div id="tutorial-screen" class="tutorial-overlay hidden">
+    <div class="tutorial-modal">
+      <h2 class="tutorial-title">Обучение</h2>
+
+      <div class="tutorial-body">
+        <p>Мир кишит монстрами, что восстали из нижнего мира. Ваша задача - истребить их всех и не дать шанса прорваться вперед.</p>
+
+        <div class="tutorial-how-play">
+        <h3>Как играть</h3>
+        <p>Расставляйте охотников по клеткам игрового поля. Монстры полезут с правой стороны. 
+          <span class="tutorial-accent-text">Нажмите "?" в правом верхнем углу</span>, чтобы узнать больше о способностях каждого и продумать свою идеальную стратегию. 
+          Удачи!</p>
+        </div>
+      </div>
+
+      <button id="btn-tutorial-close" class="menu-btn primary">Понятно</button>
+    </div>
+  </div>
+
   <button class="btn-codex-open">?</button>
 
   <div id="codex-screen" class="codex-overlay hidden">
     <div class="codex-book">
       <button id="btn-codex-close" class="codex-close">✕</button>
+      
       <div id="codex-page" class="codex-page"></div>
+      
       <div class="codex-nav">
-        <button id="btn-codex-prev" class="codex-arrow">◀</button>
-        <button id="btn-codex-next" class="codex-arrow">▶</button>
+          <button id="btn-codex-prev" class="codex-arrow">◀</button>
+          <span id="codex-counter" class="codex-counter"></span>
+          <button id="btn-codex-next" class="codex-arrow">▶</button>
       </div>
+
     </div>
   </div>
 

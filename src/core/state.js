@@ -11,6 +11,7 @@ export const state = {
   piercingShot: [],
   bladeWave: [],
   darkProjectiles: [],
+  wakeSpark: [],
   playerMoney: 50,
   spawnQueue: [],
   spawnTimer: 0,
@@ -19,6 +20,12 @@ export const state = {
   waveDelay: 10 * 60,
   spawnInterval: 8 * 60,
   droppedLansCard: null,
+  droppedCiulCard: null,
+  droppedKainCard: null,
+  droppedMadCard: null,
+  droppedDairCard: null,
+  droppedBonusCard: null,
+  dragSprite: null,
   gameLoopStarted: false,
   waveEnemyQueue: null,
   waveEnemyTimer: 0,
@@ -29,11 +36,19 @@ export function resetState(level) {
   state.enemies = [];
   state.currencies = [];
   state.bullets = [];
+  state.blazingBullets = [];
   state.crossOfExile = [];
   state.piercingShot = [];
   state.bladeWave = [];
   state.darkProjectiles = [];
+  state.wakeSpark = [];
   state.droppedLansCard = null;
+  state.droppedCiulCard = null;
+  state.droppedKainCard = null;
+  state.droppedMadCard = null;
+  state.droppedDairCard = null;
+  state.droppedBonusCard = null;
+  state.dragSprite = null;
   state.playerMoney = level.startMoney;
   state.spawnQueue = level.spawnQueue;
   state.spawnTimer = 0;
