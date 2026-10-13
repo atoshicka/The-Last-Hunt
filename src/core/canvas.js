@@ -10,6 +10,8 @@ export const CELL_SIZE = 96;
 export const GRID_X = 150;
 export const GRID_Y = 80;
 
+export const BLOCKED_COLS = 2;
+
 export function getCellCenter(col, row) {
   return {
     x: GRID_X + col * CELL_SIZE + CELL_SIZE / 2,

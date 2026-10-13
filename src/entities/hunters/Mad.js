@@ -1,91 +1,71 @@
-import { Sprite } from '../Sprite.js';
+import { Shooter } from "./Shooter.js";
+import { createSprite } from "./Hunter.js";
 
-export class Mad {
+const FPS = 60;
+
+export class Mad extends Shooter {
   constructor(x, y) {
-    this.x = x;
-    this.y = y;
-    this.scale = 1;
-    this.state = 'idle';
-    this.attackTimer = 0;
-    this.attackSpeed = 110;
-    this.row = null;
-    this.col = null;
-    this.hp = 120;
-    this.isDead = false;
-    this.protection = 60; 
-    this.isArmored = true;
-
-    this.armoredIdleSprite = new Sprite({
-      src: 'src/assets/hunters/mad-full-idle.png',
-      frameWidth: 96, frameHeight: 96, frames: 1, speed: 1,
+    super(x, y, {
+      hp: 120,
+      attackSpeed: 110,
+      idleSrc: 'src/assets/hunters/mad-full-idle.png',
+      attackSrc: 'src/assets/hunters/mad-full-attack.png',
+      offset: { x: 48, y: 46 },
     });
 
-    this.armoredAttackSprite = new Sprite({
-      src: 'src/assets/hunters/mad-full-attack.png',
-      frameWidth: 96, frameHeight: 96, frames: 1, speed: 1,
-    });
+    this.applyShield(60);
+    this.shieldRegen = 10;
+    this.regenInterval = 20 * FPS;
+    this.regenTimer = 0;
 
-    this.bareIdleSprite = new Sprite({
-      src: 'src/assets/hunters/mad-idle.png', 
-      frameWidth: 96, frameHeight: 96, frames: 1, speed: 1,
-    });
+    this.bareIdleSprite = createSprite('src/assets/hunters/mad-idle.png');
+    this.bareAttackSprite = createSprite('src/assets/hunters/mad-attack.png');
 
-    this.bareAttackSprite = new Sprite({
-      src: 'src/assets/hunters/mad-attack.png',
-      frameWidth: 96, frameHeight: 96, frames: 1, speed: 1,
-    });
+    this.armorStages = [
+      { above: 0, idle: this.idleSprite, attack: this.attackSprite },
+      { above: -1, idle: this.bareIdleSprite, attack: this.bareAttackSprite },
+    ];
   }
 
-  takeDamage(amount) {
-    if (this.isArmored && this.protection > 0) {
-      this.protection -= amount;
-
-      if (this.protection <= 0) {
-        this.protection = 0;
-        this.isArmored = false;
-      }
-    } else {
-      this.hp -= amount;
-      if (this.hp <= 0) this.isDead = true;
-    }
+  get isArmored() {
+    return this.shield > 0;
   }
 
-  update(enemies = []) {
-    if (this.isDead) return null;
-
-    const target = enemies.find(e => e.row === this.row && !e.isDead);
-
-    if (target) {
-      this.state = 'attack';
-      this.attackTimer++;
-      if (this.attackTimer >= this.attackSpeed) {
-        this.attackTimer = 0;
-        return { blazingShoot: true, x: this.x + 48, y: this.y };
-      }
-    } else {
-      this.state = 'idle';
-      this.attackTimer = 0;
-    }
-
-    if (this.isArmored) {
-      this.armoredIdleSprite.update();
-      this.armoredAttackSprite.update();
-    } else {
-      this.bareIdleSprite.update();
-      this.bareAttackSprite.update();
-    }
-
-    return null;
+  getArmorStage() {
+    const ratio = this.maxShield > 0 ? this.shield / this.maxShield : 0;
+    return this.armorStages.find(stage => ratio > stage.above);
   }
 
-  draw(ctx) {
-    if (this.isDead) return;
+  getSprite() {
+    const stage = this.getArmorStage();
+    return this.state === 'attack' ? stage.attack : stage.idle;
+  }
 
-    const idleSprite = this.isArmored ? this.armoredIdleSprite : this.bareIdleSprite;
-    const attackSprite = this.isArmored ? this.armoredAttackSprite : this.bareAttackSprite;
-    const sprite = this.state === 'attack' ? attackSprite : idleSprite;
+  updateSprites() {
+    const stage = this.getArmorStage();
+    stage.idle.update();
+    stage.attack.update();
+  }
 
-    sprite.draw(ctx, this.x - 48, this.y - 46, this.scale);
+  updateShield() {
+    if (this.shield >= this.maxShield) {
+      this.regenTimer = 0;
+      return;
+    }
 
+    this.regenTimer++;
+    if (this.regenTimer < this.regenInterval) return;
+    this.regenTimer = 0;
+
+    this.regenShield(this.shieldRegen);
+  }
+
+  onUpdate(enemies, hunters) {
+    this.updateShield();
+    return super.onUpdate(enemies, hunters);
+  }
+
+  createAction() {
+    return { blazingShoot: true, x: this.x + 48, y: this.y };
   }
 }

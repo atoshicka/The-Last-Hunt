@@ -1,4 +1,4 @@
-import { canvas, ctx, COLS, ROWS, CELL_SIZE, GRID_X, GRID_Y, getCellCenter, getCanvasCoords } from '../core/canvas.js';
+import { canvas, ctx, COLS, ROWS, CELL_SIZE, GRID_X, GRID_Y, BLOCKED_COLS, getCellCenter } from '../core/canvas.js';
 import { state, resetState } from '../core/state.js';
 import { allCards, cardSprites } from './config.js';
 
@@ -7,18 +7,24 @@ import { Zombie } from '../entities/enemies/Zombie.js';
 import { HellishDog } from '../entities/enemies/HellishDog.js';
 import { Imp } from '../entities/enemies/Imp.js';
 import { Death } from '../entities/enemies/Death.js';
+import { Gin } from '../entities/enemies/Gin.js';
 
 import { Bullet } from '../entities/projectiles/Bullet.js';
 import { CrossOfExile } from '../entities/projectiles/CrossOfExile.js';
 import { PiercingShot } from '../entities/projectiles/PiercingShot.js';
 import { BladeWave } from '../entities/projectiles/BladeWave.js';
 import { BlazingBullet } from '../entities/projectiles/BlazingBullet.js';
+import { WakeSpark } from '../entities/projectiles/WakeSpark.js';
 
 import { Currency } from '../entities/Currency.js';
 import { showOverlay } from './Overlay.js';
 
 const waveGhostImage = new Image();
 waveGhostImage.src = 'src/assets/enemies/ghost.png';
+
+const BONUS_COLOR = '#ff5c8a';
+
+const BONUS_UNLOCK_LEVEL = 5;
 
 let levelsCount = 0;
 
@@ -43,17 +49,24 @@ export function initGame(levels, onLevelsSelect) {
 }
 
 export function loadLevel(levelIndex, levels, selectedSquad) {
+  const level = levels[levelIndex];
   state.currentLevel = levelIndex;
-  resetState(levels[levelIndex]);
+  resetState(level);
 
   const cardTypes = (selectedSquad && selectedSquad.length > 0)
     ? selectedSquad
-    : levels[levelIndex].availableCards;
+    : level.availableCards;
 
   let cardY = 60;
   state.cards = cardTypes.map(type => {
     const base = allCards[type];
-    const card = { ...base, x: 20, y: cardY, timer: 0 };
+    const card = {
+      ...base,
+      cost: level.isBonus ? 0 : base.cost,
+      x: 20,
+      y: cardY,
+      timer: 0,
+    };
     cardY += 100;
     return card;
   });
@@ -81,13 +94,13 @@ export function update(levels) {
         enemiesPool.sort(() => Math.random() - 0.5);
 
         state.waveEnemyQueue = [];
-          for (let i = 0; i < enemiesPool.length; i++) {
-            state.waveEnemyQueue.push({ 
-              type: enemiesPool[i], 
-              delay: i * 90,
-              spawned: false 
-            });
-          }
+        for (let i = 0; i < enemiesPool.length; i++) {
+          state.waveEnemyQueue.push({
+            type: enemiesPool[i],
+            delay: i * 90,
+            spawned: false
+          });
+        }
         state.waveEnemyTimer = 0;
       }
 
@@ -105,6 +118,12 @@ export function update(levels) {
             case 'imp': enemy = new Imp(pos.x, pos.y, GRID_X); break;
             case 'death': enemy = new Death(pos.x, pos.y, GRID_X); break;
             case 'zombie': enemy = new Zombie(pos.x, pos.y, GRID_X); break;
+            case 'gin': {
+              const col = 7 + Math.floor(Math.random() * 3);
+              const ginPos = getCellCenter(col, row);
+              enemy = new Gin(ginPos.x, ginPos.y);
+              break;
+            }
             default: enemy = new Ghost(pos.x, pos.y, GRID_X); break;
           }
 
@@ -123,14 +142,15 @@ export function update(levels) {
   }
 
   state.hunters.forEach(h => {
-    const result = h.update ? h.update(state.enemies) : null;
+    const result = h.update ? h.update(state.enemies, state.hunters) : null;
     if (result?.shoot) state.bullets.push(new Bullet(result.x, result.y));
     if (result?.flame) state.crossOfExile.push(new CrossOfExile(result.x, result.y));
     if (result?.piercingShot) state.piercingShot.push(new PiercingShot(result.x, result.y));
     if (result?.bladeWave) state.bladeWave.push(new BladeWave(result.x, result.y, result.target));
     if (result?.blazingShoot) state.blazingBullets.push(new BlazingBullet(result.x, result.y));
+    if (result?.wakeSpark) state.wakeSpark.push(new WakeSpark(result.x, result.y, result.target));
 
-    if (h.constructor.name === 'Angel') {
+    if (h.constructor.name === 'Angel' && !h.isAsleep) {
       h.dropTimer = (h.dropTimer || 0) + 1;
       if (h.dropTimer >= 60 * 13) {
         h.dropTimer = 0;
@@ -147,6 +167,7 @@ export function update(levels) {
   updateArray(state.bladeWave);
   updateArray(state.blazingBullets, state.enemies);
   updateArray(state.darkProjectiles);
+  updateArray(state.wakeSpark);
 
   state.enemies.forEach(e => {
     if (e.constructor.name === 'Death') {
@@ -154,7 +175,7 @@ export function update(levels) {
     } else {
       e.update(state.hunters);
     }
-    
+
     if (e.reachedEnd) {
       state.gameState = 'gameover';
       showOverlay('gameover', state.currentLevel, levels.length);
@@ -173,7 +194,11 @@ export function update(levels) {
       triggerCardDrop('droppedKainCard');
     } else if (state.currentLevel === 3 && !state.droppedMadCard) {
       triggerCardDrop('droppedMadCard');
-    } else if (state.currentLevel >= 4) {
+    } else if (state.currentLevel === 4 && !state.droppedDairCard) {
+      triggerCardDrop('droppedDairCard');
+    } else if (state.currentLevel === BONUS_UNLOCK_LEVEL && !state.droppedBonusCard) {
+      triggerCardDrop('droppedBonusCard');
+    } else if (state.currentLevel > BONUS_UNLOCK_LEVEL) {
       state.gameState = 'win';
       showOverlay('win', state.currentLevel, levels.length);
     }
@@ -223,8 +248,11 @@ export function draw() {
   state.bladeWave.forEach(b => b.draw(ctx));
   state.darkProjectiles.forEach(p => p.draw(ctx));
   state.blazingBullets.forEach(b => b.draw(ctx));
-  
+  state.wakeSpark.forEach(b => b.draw(ctx));
+
   state.currencies.forEach(c => c.draw(ctx));
+
+  state.hunters.forEach(h => h.drawOverlay?.(ctx));
 
   drawCards();
   drawDroppedCards();
@@ -250,6 +278,21 @@ function drawGrid() {
       ctx.strokeRect(x, y, CELL_SIZE, CELL_SIZE);
     }
   }
+
+  drawBlockedLine();
+}
+
+function drawBlockedLine() {
+  const x = GRID_X + (COLS - BLOCKED_COLS) * CELL_SIZE;
+
+  ctx.save();
+  ctx.strokeStyle = 'rgba(255, 68, 68, 0.8)';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(x, GRID_Y);
+  ctx.lineTo(x, GRID_Y + ROWS * CELL_SIZE);
+  ctx.stroke();
+  ctx.restore();
 }
 
 function drawCards() {
@@ -311,7 +354,7 @@ function drawWaveProgress() {
 
   const barWidth = 180;
   const barX = canvas.width - 130 - barWidth - 100;
-  const barY = 32;
+  const barY = 30;
   const barHeight = 16;
 
   const totalWaves = state.spawnQueue.length;
@@ -339,20 +382,31 @@ function drawWaveProgress() {
 function drawDroppedCards() {
   const drawCard = (c, spriteKey, label) => {
     if (!c) return;
+    const isMystery = spriteKey === null;
     if (c.bobTimer < Math.PI) c.bobTimer = (c.bobTimer || 0) + 0.08;
     const bobY = c.y - Math.sin(c.bobTimer) * 20;
 
     ctx.fillStyle = '#1a1a2e';
     ctx.fillRect(c.x, bobY, c.width, c.height);
-    ctx.strokeStyle = '#ffd700'; 
+    ctx.strokeStyle = isMystery ? BONUS_COLOR : '#ffd700';
     ctx.lineWidth = 2;
     ctx.strokeRect(c.x, bobY, c.width, c.height);
 
-    const scale = 0.6;
-    const drawSize = 96 * scale;
-    const spriteX = c.x + c.width / 2 - drawSize / 2;
-    const spriteY = bobY + 10;
-    cardSprites[spriteKey]?.draw(ctx, spriteX, spriteY, scale);
+    if (isMystery) {
+      ctx.save();
+      ctx.fillStyle = BONUS_COLOR;
+      ctx.font = 'bold 48px monospace';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('?', c.x + c.width / 2, bobY + c.height / 2 - 6);
+      ctx.restore();
+    } else {
+      const scale = 0.6;
+      const drawSize = 96 * scale;
+      const spriteX = c.x + c.width / 2 - drawSize / 2;
+      const spriteY = bobY + 10;
+      cardSprites[spriteKey]?.draw(ctx, spriteX, spriteY, scale);
+    }
 
     ctx.fillStyle = '#fbf3f3';
     ctx.font = '12px monospace';
@@ -364,4 +418,6 @@ function drawDroppedCards() {
   drawCard(state.droppedCiulCard, 'ciul', 'ciul');
   drawCard(state.droppedKainCard, 'kain', 'kain');
   drawCard(state.droppedMadCard, 'mad', 'mad');
+  drawCard(state.droppedDairCard, 'dair', 'dair');
+  drawCard(state.droppedBonusCard, null, '???');
 }

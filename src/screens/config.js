@@ -5,9 +5,10 @@ export const allCards = {
   angel: { type: 'angel', label: 'angel', width: 110, height: 80, cooldown: 5,  cost: 50  },
   salt: { type: 'salt', label: 'salt', width: 110, height: 80, cooldown: 10, cost: 50  },
   lans: { type: 'lans', label: 'lans', width: 110, height: 80, cooldown: 10, cost: 200 },
-  ciul: {type: 'ciul', label: 'ciul', width: 110, height: 80, cooldown: 8, cost: 100},
+  ciul: {type: 'ciul', label: 'ciul', width: 110, height: 80, cooldown: 8, cost: 150},
   kain: { type: 'kain', label: 'kain', width: 110, height: 80, cooldown: 16, cost: 50 },
-  mad: { type: 'mad', label: 'mad', width: 110, height: 80, cooldown: 12, cost: 150 },
+  mad: { type: 'mad', label: 'mad', width: 110, height: 80, cooldown: 12, cost: 200 },
+  dair: { type: 'dair', label: 'dair', width: 110, height: 80, cooldown: 15, cost: 150 },
 };
 
 export const cardSprites = {
@@ -18,4 +19,5 @@ export const cardSprites = {
   ciul: new Sprite({ src: 'src/assets/hunters/ciul-idle.png', frameWidth: 96, frameHeight: 96, frames: 1, speed: 1 }),
   kain: new Sprite({ src: 'src/assets/hunters/kain-idle.png', frameWidth: 96, frameHeight: 96, frames: 1, speed: 1 }),
   mad: new Sprite({ src: 'src/assets/hunters/mad-idle.png', frameWidth: 96, frameHeight: 96, frames: 1, speed: 1 }),
+  dair: new Sprite({ src: 'src/assets/hunters/dair-idle.png', frameWidth: 96, frameHeight: 96, frames: 1, speed: 1 }),
 };

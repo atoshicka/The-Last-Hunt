@@ -1,6 +1,6 @@
 export class DarkProjectile {
   constructor(x, y, target, damage) {
-    this.x = x - 5; 
+    this.x = x - 5;
     this.y = y;
     this.target = target;
     this.damage = damage;
@@ -10,9 +10,22 @@ export class DarkProjectile {
     this.currentRadius = 0;
     this.maxRadius = 45;
 
-    if (this.target && !this.target.isDead) {
-      this.target.hp -= this.damage;
-      if (this.target.hp <= 0) this.target.isDead = true;
+    this.applyDamageToTarget();
+  }
+
+  applyDamageToTarget() {
+    const target = this.target;
+    if (!target || target.isDead) return;
+
+    if (typeof target.takeDamage === 'function') {
+      target.takeDamage(this.damage);
+      return;
+    }
+
+    target.hp -= this.damage;
+    if (target.hp <= 0) {
+      target.hp = 0;
+      target.isDead = true;
     }
   }
 
@@ -39,10 +52,10 @@ export class DarkProjectile {
     ctx.save();
 
     const gradient = ctx.createRadialGradient(
-      this.x, this.y, 0, 
+      this.x, this.y, 0,
       this.x, this.y, this.currentRadius
     );
-    
+
     gradient.addColorStop(0, 'rgba(0, 0, 0, 1)');
     gradient.addColorStop(0.5, 'rgba(74, 0, 114, 0.8)');
     gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');

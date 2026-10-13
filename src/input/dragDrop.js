@@ -1,4 +1,4 @@
-import { canvas, COLS, ROWS, CELL_SIZE, GRID_X, GRID_Y, getCellCenter, getCanvasCoords } from '../core/canvas.js';
+import { canvas, COLS, ROWS, CELL_SIZE, GRID_X, GRID_Y, BLOCKED_COLS, getCellCenter, getCanvasCoords } from '../core/canvas.js';
 import { state } from '../core/state.js';
 import { Comissar } from '../entities/hunters/Comissar.js';
 import { Angel } from '../entities/hunters/Angel.js';
@@ -7,6 +7,12 @@ import { Salt } from '../entities/Salt.js';
 import { Ciul } from '../entities/hunters/Ciul.js';
 import { Kain } from '../entities/hunters/Kain.js';
 import { Mad } from "../entities/hunters/Mad.js";
+import { Dair } from '../entities/hunters/Dair.js';
+
+const JUMP_FRAMES = 20;
+const JUMP_HEIGHT = 30;
+
+const PLACEABLE_COLS = COLS - BLOCKED_COLS;
 
 function createDragSprite(type, mx, my) {
   if (type === 'comissar') return new Comissar(mx, my);
@@ -16,7 +22,52 @@ function createDragSprite(type, mx, my) {
   if (type === 'ciul') return new Ciul(mx, my);
   if (type === 'kain') return new Kain(mx, my);
   if (type === 'mad') return new Mad(mx, my);
+  if (type === 'dair') return new Dair(mx, my);
   return null;
+}
+
+function jumpEnemy(enemy, toX) {
+  const fromX = enemy.x;
+  const fromY = enemy.y;
+  let frame = 0;
+
+  function step() {
+    if (enemy.isDead || state.gameState !== 'playing') {
+      enemy.y = fromY;
+      return;
+    }
+
+    frame++;
+    const progress = Math.min(frame / JUMP_FRAMES, 1);
+    enemy.x = fromX + (toX - fromX) * progress;
+    enemy.y = fromY - Math.sin(progress * Math.PI) * JUMP_HEIGHT;
+
+    if (progress < 1) {
+      requestAnimationFrame(step);
+    } else {
+      enemy.x = toX;
+      enemy.y = fromY;
+    }
+  }
+
+  requestAnimationFrame(step);
+}
+
+function pushEnemiesFromCell(col, row) {
+  const cellLeft = GRID_X + col * CELL_SIZE;
+  const cellRight = cellLeft + CELL_SIZE;
+  const landingX = getCellCenter(col + 1, row).x;
+
+  state.enemies.forEach(enemy => {
+    if (enemy.isDead || enemy.row !== row) return;
+    if (enemy.speed === 0) return;
+    if (enemy.x < cellLeft || enemy.x >= cellRight) return;
+
+    enemy.target = null;
+    if (enemy.idleSprite) enemy.sprite = enemy.idleSprite;
+
+    jumpEnemy(enemy, landingX);
+  });
 }
 
 function placeHunter(type, pos, col, row) {
@@ -28,11 +79,14 @@ function placeHunter(type, pos, col, row) {
   else if (type === 'ciul') h = new Ciul(pos.x, pos.y);
   else if (type === 'kain') h = new Kain(pos.x, pos.y);
   else if (type === 'mad') h = new Mad(pos.x, pos.y);
+  else if (type === 'dair') h = new Dair(pos.x, pos.y);
   if (!h) return;
 
   h.col = col;
   h.row = row;
   state.hunters.push(h);
+
+  pushEnemiesFromCell(col, row);
 
   const card = state.cards.find(c => c.type === type);
   if (card) {
@@ -45,7 +99,7 @@ function removeHunterAt(clientX, clientY) {
   const { x: mx, y: my } = getCanvasCoords(clientX, clientY);
 
   const targetIndex = state.hunters.findIndex(h => {
-    return Math.abs(h.x - mx) < 48 && Math.abs(h. y - my) < 48;
+    return Math.abs(h.x - mx) < 48 && Math.abs(h.y - my) < 48;
   });
 
   if (targetIndex !== -1) {
@@ -77,7 +131,14 @@ export function initDragDrop() {
     const { x: mx, y: my } = getCanvasCoords(e.clientX, e.clientY);
 
     if (state.gameState === 'cardDrop') {
-      const clickedCard = [state.droppedLansCard, state.droppedCiulCard, state.droppedKainCard, state.droppedMadCard].find(c =>
+      const clickedCard = [
+        state.droppedLansCard,
+        state.droppedCiulCard,
+        state.droppedKainCard,
+        state.droppedMadCard,
+        state.droppedDairCard,
+        state.droppedBonusCard
+      ].find(c =>
         c && mx >= c.x && mx <= c.x + c.width && my >= c.y && my <= c.y + c.height
       );
 
@@ -86,6 +147,8 @@ export function initDragDrop() {
         state.droppedCiulCard = null;
         state.droppedKainCard = null;
         state.droppedMadCard = null;
+        state.droppedDairCard = null;
+        state.droppedBonusCard = null;
         state.gameState = 'win';
         canvas.dispatchEvent(new CustomEvent('gameWin'));
       }
@@ -134,7 +197,7 @@ export function initDragDrop() {
     const col = Math.floor((mx - GRID_X) / CELL_SIZE);
     const row = Math.floor((my - GRID_Y) / CELL_SIZE);
 
-    if (col >= 0 && col < COLS && row >= 0 && row < ROWS) {
+    if (col >= 0 && col < PLACEABLE_COLS && row >= 0 && row < ROWS) {
       const pos = getCellCenter(col, row);
       const cellTaken = state.hunters.some(h => h.col === col && h.row === row);
       if (!cellTaken) placeHunter(dragging, pos, col, row);
